@@ -11,8 +11,9 @@ function createWorld({ exercises = [], references = {}, invisibleReferences = []
   const world = { exercises, references, removed: {}, uploaded: {}, writes: [], recentCleared: [] };
   const visible = row => row.owner_id === ALICE || row.owner_id == null;
   const owned = row => row.owner_id === ALICE;
-  const matches = (row, op) => Object.entries(op.filters).every(([column, value]) => row[column] === value)
-    && Object.entries(op.excluded).every(([column, value]) => row[column] !== value);
+  const matches = (row, op) => Object.entries(op.filters).every(([column, value]) => (row[column] ?? null) === value)
+    && Object.entries(op.excluded).every(([column, value]) => row[column] !== value)
+    && Object.entries(op.within).every(([column, values]) => values.includes(row[column]));
 
   function respond(op) {
     if (failing[op.table]?.includes(op.action)) return { data: null, count: null, error: { code: 'XX000', message: 'failure' } };
@@ -26,7 +27,7 @@ function createWorld({ exercises = [], references = {}, invisibleReferences = []
     }
     const rows = world.exercises.filter(visible).filter(row => matches(row, op));
     if (op.action === 'select') {
-      const data = (op.ids ? rows.filter(row => op.ids.includes(row.id)) : rows).map(row => ({ ...row }));
+      const data = rows.map(row => ({ ...row }));
       return op.single ? { data: data[0] ?? null, error: data[0] ? null : { code: 'PGRST116' } } : { data, error: null };
     }
     world.writes.push({ action: op.action, id: op.filters.id, payload: op.payload });
@@ -46,17 +47,19 @@ function createWorld({ exercises = [], references = {}, invisibleReferences = []
   world.client = {
     auth: { getUser: async () => ({ data: { user: { id: ALICE } }, error: null }) },
     from(table) {
-      const op = { table, action: 'select', filters: {}, excluded: {}, payload: null, single: false, ids: null };
+      const op = { table, action: 'select', filters: {}, excluded: {}, within: {}, payload: null, single: false };
       const query = {
         select() { return query; },
         update(payload) { op.action = 'update'; op.payload = payload; return query; },
         delete() { op.action = 'delete'; return query; },
         eq(column, value) { op.filters[column] = value; return query; },
         neq(column, value) { op.excluded[column] = value; return query; },
+        // The rebuilt base is read with .is('owner_id', null).in('source_sheet', [...]).
+        is(column, value) { op.filters[column] = value; return query; },
         order() { return query; },
         limit() { return query; },
         range() { return query; },
-        in(_column, ids) { op.ids = ids; return query; },
+        in(column, values) { op.within[column] = values; return query; },
         single() { op.single = true; return query; },
         then(resolve, reject) { return Promise.resolve(respond(op)).then(resolve, reject); },
       };
@@ -112,14 +115,27 @@ const mine = (id, extra = {}) => ({ id, name: `Упражнение ${id}`, musc
   await assert.rejects(library.listMyExercises(), /Не удалось загрузить ваши упражнения/);
 }
 
-// A deleted private exercise leaves every picker; a retired shared one is not affected by this feature.
+// A deleted private exercise leaves every picker. So does a retired shared card since the base
+// was rebuilt: of the shared ones only published cards and the rebuilt sheet remain.
 {
-  const world = useWorld({ exercises: [mine('live'), mine('gone', { status: 'retired' }), { ...mine('old-shared', { status: 'retired' }), owner_id: null }] });
-  world.recent = ['gone', 'live'];
+  const shared = (id, extra) => ({ ...mine(id, extra), owner_id: null });
+  const world = useWorld({ exercises: [
+    mine('live'), mine('gone', { status: 'retired' }),
+    shared('old-shared', { status: 'retired' }),
+    shared('published-shared', { status: 'published' }),
+    shared('rebuilt-shared', { source_sheet: library.REBUILT_BASE_SHEETS[0] }),
+    shared('rebuilt-retired', { status: 'retired', source_sheet: library.REBUILT_BASE_SHEETS[0] }),
+    shared('legacy-shared'),
+  ] });
+  world.recent = ['gone', 'old-shared', 'live', 'rebuilt-shared'];
   const result = await library.listExerciseLibrary();
-  assert.deepEqual(result.all.map(item => item.id).sort(), ['live', 'old-shared']);
+  assert.deepEqual(result.all.map(item => item.id).sort(), ['live', 'published-shared', 'rebuilt-shared']);
   assert.deepEqual(result.mine.map(item => item.id), ['live']);
-  assert.deepEqual(result.recent.map(item => item.id), ['live']);
+  assert.deepEqual(result.recent.map(item => item.id), ['live', 'rebuilt-shared'], 'recent exercises do not bring back retired cards');
+}
+{
+  useWorld({ exercises: [mine('live')], failing: { exercises: ['select'] } });
+  await assert.rejects(library.listExerciseLibrary(), /Не удалось загрузить/);
 }
 
 // Usage counts come from all three layers.
@@ -283,8 +299,8 @@ const faq = read('../src/components/MenuScreens.jsx');
 assert.doesNotMatch(training, /\{ id: 'my-exercises', label: 'Мои упражнения' \}/);
 assert.match(training, /activeTab === 'exercises' && <section[^\n]*<TrainingExerciseBrowser refreshKey=\{refreshKey\}/);
 assert.match(browser, /role="tablist" aria-label="Источник упражнений"/);
-assert.match(browser, /onClick=\{\(\) => setSource\('base'\)\}>База/);
-assert.match(browser, /onClick=\{\(\) => setSource\('mine'\)\}>Мои упражнения/);
+assert.match(browser, /onClick=\{\(\) => changeSource\('base'\)\}>База/);
+assert.match(browser, /onClick=\{\(\) => changeSource\('mine'\)\}>Мои упражнения/);
 assert.match(browser, /listMyExercises\(\)/);
 assert.match(browser, /<DeleteExerciseDialog exercise=\{deleting\}/);
 assert.match(browser, /<CustomExerciseForm key=\{selected\?\.id \?\? 'new'\}/);
