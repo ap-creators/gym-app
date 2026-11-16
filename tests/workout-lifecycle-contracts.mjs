@@ -8,6 +8,10 @@ const lifecycle = read('supabase/schema/workout-session-lifecycle.sql');
 const statuses = read('supabase/schema/program-status-lifecycle.sql');
 assert.match(home, /recoveryResponse[\s\S]*\.lt\('scheduled_date', dateKey\)/);
 assert.match(home, /Перенести на сегодня/);
+// #117: a workout skipped in the program schedule must not come back to today's card as a missed one.
+const recoveryQuery = home.match(/const recoveryResponse = await supabase[\s\S]*?\.limit\(1\);/)?.[0] ?? '';
+assert.match(recoveryQuery, /\.eq\('status', 'scheduled'\)/, 'Only a not-done scheduled workout is offered for recovery');
+assert.doesNotMatch(recoveryQuery, /skipped/, 'A workout skipped on purpose is not offered for recovery');
 assert.match(home, /effectiveWorkout\.scheduledDate \|\| selectedDateKey/);
 assert.doesNotMatch(home, /Выполнено<\/span>/);
 assert.match(detail, /participation\.status === 'cancelled'/);

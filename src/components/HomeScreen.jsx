@@ -320,11 +320,13 @@ async function loadWorkoutCard(dateKey) {
   }
   let recovery = false;
   if (!workoutRow && dateKey === toDateKey(new Date())) {
+    // #117: only a workout the user simply did not do comes back as «Пропущенная тренировка».
+    // One they skipped on purpose («Пропустить» in the program schedule) is settled and stays in history.
     const recoveryResponse = await supabase
       .from('scheduled_workouts')
       .select('id, user_program_id, workout_name, scheduled_date, status, sequence_number, user_programs!inner(status)')
       .lt('scheduled_date', dateKey)
-      .in('status', ['scheduled', 'skipped'])
+      .eq('status', 'scheduled')
       .eq('user_programs.status', 'active')
       .order('scheduled_date', { ascending: true })
       .order('sequence_number', { ascending: true })
