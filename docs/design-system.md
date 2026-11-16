@@ -441,3 +441,8 @@ Five equal-sized buttons, from left to right: **Главная → Тренир�
 - The totals are read with the card: the latest completed session of the workout gives the time, its completed sets the tonnage (`tonnageFromSetRows`, the rules of the result screen). If that reading fails, the card shows without rows instead of the error card.
 - A workout that is running again («Активная тренировка») keeps the black card.
 - Styles: `src/home-workout-done.css`, imported in `src/main.jsx` after `home-summary.css`. Wording: `src/lib/completedWorkoutFacts.js`. Check: `tests/home-workout-done.mjs` (`test:ui-audit`).
+
+## Skipped workout stays skipped — November 2026 (#117)
+- On today's home card, «Пропущенная тренировка» with «Перенести на сегодня» offers only the earliest past workout that is still `scheduled`: a day the user simply did not train. A workout skipped on purpose («Пропустить» → «Да, пропустить» in the program schedule) is settled: it no longer comes back to the home screen; before #117 it did, so skipping looked as if it had no effect.
+- The skipped workout stays in history: «Пропущена» in the program schedule, and on its own date in the home calendar the card «Пропущенная тренировка» with a disabled «Пропущена» button. It can still be returned to the schedule or marked done with the pencil on that date.
+- Check: `tests/workout-lifecycle-contracts.mjs` (`test:lifecycle`).
