@@ -1,0 +1,23 @@
+/* Bottom action bar of the program detail on the dark theme.
+   The bar is a hard-coded white (rgba(255,255,255,.96)), its filled buttons write #fff on --ink,
+   which the dark theme turns near-white, and the secondary «Редактировать программу» sits on
+   --accent-soft, a token the dark theme does not redefine. On the dark theme the bar was a white
+   strip with an unreadable label.
+   Here the bar takes --surface, a filled button writes --surface on --ink, and the secondary
+   button is a dimmed --ink plate over --surface, like the active tiles of #96.
+   Only the dark theme is overridden; the light theme is unchanged. The catalog program detail
+   («Присоединиться к программе») uses the same bar and the same filled button.
+   Imported in main.jsx after the global layers. */
+html[data-theme='dark'] .program-detail-footer {
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+}
+
+html[data-theme='dark'] .program-detail-start-button,
+html[data-theme='dark'] .program-detail-footer:not(.two-actions) .program-detail-edit-button {
+  color: var(--surface);
+}
+
+html[data-theme='dark'] .program-detail-footer.two-actions .program-detail-edit-button {
+  background: color-mix(in srgb, var(--ink) 14%, var(--surface));
+  color: var(--ink);
+}

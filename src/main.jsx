@@ -25,6 +25,7 @@ import './home-workout-done.css';
 import './home-calendar-dark.css';
 import './home-banner-swipe.css';
 import './navigation-dark-highlight.css';
+import './program-footer-dark.css';
 import './portrait-lock.css';
 
 // Before the first render, so a phone already on its side opens the app upright (#102).

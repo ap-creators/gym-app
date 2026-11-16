@@ -455,3 +455,9 @@ Five equal-sized buttons, from left to right: **Главная → Тренир�
 - Buttons are 44px high. Colours are theme tokens, so the list follows the dark theme; the only literals are the `--schedule-*` warm and danger tones in `src/program-schedule-list.css`, with dark values under `html[data-theme='dark']`.
 - Class names start with `owned-schedule-`: `program-schedule-list` and `program-schedule-error` belong to the create-program schedule screens.
 - Check: `tests/program-schedule-single-list.mjs` (`test:ui-audit`).
+
+## Program detail bottom bar on the dark theme — November 2026
+- The fixed bar under a program («Редактировать программу», «Начать программу», and «Присоединиться к программе» in the catalog) was a white strip with an unreadable label on the dark theme: the bar is a literal white, its filled buttons write `#fff` on `--ink`, and the secondary button sits on `--accent-soft`, which the dark theme does not redefine.
+- On the dark theme the bar is `--surface` at 96% over the blur. A filled button stays an `--ink` plate and writes `--surface`. With two actions, «Редактировать программу» is the secondary one: `--ink` at 14% over `--surface` with `--ink` text, the same dimmed plate as the active tiles of #96.
+- Only the dark theme is overridden, in `src/program-footer-dark.css` (imported in `main.jsx`); the light theme is unchanged.
+- Check: `tests/program-footer-dark.mjs` (`test:ui-audit`).
