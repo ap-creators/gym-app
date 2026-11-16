@@ -235,8 +235,7 @@ body:has(.program-detail-phone) .app-bottom-nav {
 .program-detail-phone .program-detail-workout-copy span,
 .program-detail-phone .program-detail-week-workout span,
 .program-detail-phone .catalog-workout-title small,
-.program-detail-phone .catalog-exercise-copy > span,
-.program-detail-phone .scheduled-workout-badge{
+.program-detail-phone .catalog-exercise-copy > span{
   font-size:var(--text-caption)!important;line-height:var(--lh-caption)!important;
 }
 .program-detail-phone .program-detail-footer button{

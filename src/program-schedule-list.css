@@ -1,0 +1,122 @@
+/* #119: the «График» tab of a running program is one list. A row shows the
+   date, the name and the status of a workout; its actions open under it.
+   Colours come from the theme tokens, so the list follows the dark theme. */
+.owned-schedule-list{
+  --schedule-danger:#9a3f35;
+  --schedule-warn:#8e432f;
+  --schedule-warn-soft:#f5ddd0;
+  list-style:none;margin:0;padding:0;
+  display:grid;gap:var(--space-2);
+}
+html[data-theme='dark'] .owned-schedule-list{
+  --schedule-danger:#e9958a;
+  --schedule-warn:#e8a98f;
+  --schedule-warn-soft:#4a2f25;
+}
+.owned-schedule-row{
+  min-width:0;overflow:hidden;
+  border:1px solid var(--line);border-radius:var(--radius-md);
+  background:var(--surface);color:var(--ink);
+}
+.owned-schedule-row-head{
+  width:100%;min-height:64px;box-sizing:border-box;
+  display:grid;grid-template-columns:44px minmax(0,1fr) auto;
+  align-items:center;gap:var(--space-3);
+  padding:var(--space-2) var(--space-3);
+  border:0;border-radius:0;background:transparent;color:inherit;
+  font:inherit;text-align:left;
+}
+button.owned-schedule-row-head{cursor:pointer}
+
+/* The date tile carries the status at a glance: filled once the workout is done. */
+.owned-schedule-row-date{
+  width:44px;height:44px;border-radius:var(--radius-sm);
+  display:grid;place-content:center;justify-items:center;
+  background:var(--surface-2);color:var(--ink);
+}
+.owned-schedule-row-date strong{
+  font-size:var(--text-h3);line-height:18px;font-weight:var(--weight-bold);
+}
+.owned-schedule-row-date small{
+  font-size:var(--text-micro);line-height:var(--lh-micro);font-weight:var(--weight-semibold);
+}
+.owned-schedule-row.status-completed .owned-schedule-row-date{background:var(--ink);color:var(--surface)}
+.owned-schedule-row.status-overdue .owned-schedule-row-date{background:var(--schedule-warn-soft);color:var(--schedule-warn)}
+.owned-schedule-row.status-skipped .owned-schedule-row-head,
+.owned-schedule-row.status-cancelled .owned-schedule-row-head{opacity:.6}
+
+.owned-schedule-row-copy{min-width:0;display:grid;gap:2px}
+.owned-schedule-row-copy > strong{
+  font-size:var(--text-body);line-height:var(--lh-body);font-weight:var(--weight-semibold);
+  overflow-wrap:anywhere;
+}
+/* One line only: a part that does not fit wraps below and is clipped whole,
+   with its dot, so a narrow phone drops the exercise count, not half a word. */
+.owned-schedule-row-meta{
+  display:flex;flex-wrap:wrap;column-gap:6px;
+  max-height:var(--lh-caption);overflow:hidden;
+  color:var(--muted);font-size:var(--text-caption);line-height:var(--lh-caption);
+}
+.owned-schedule-row-meta > span + span::before{content:"·";margin-right:6px}
+.owned-schedule-row-status{color:var(--ink);font-weight:var(--weight-semibold)}
+.owned-schedule-row.status-overdue .owned-schedule-row-status{color:var(--schedule-warn)}
+.owned-schedule-row.status-skipped .owned-schedule-row-status,
+.owned-schedule-row.status-cancelled .owned-schedule-row-status{color:inherit}
+
+.owned-schedule-row-chevron{
+  width:20px;height:20px;color:var(--muted);
+  transition:transform .2s ease;
+}
+.owned-schedule-row.open .owned-schedule-row-chevron{transform:rotate(180deg)}
+
+.owned-schedule-row-body{
+  display:grid;gap:var(--space-2);
+  padding:0 var(--space-3) var(--space-3);
+}
+.owned-schedule-action{
+  min-width:0;min-height:44px;box-sizing:border-box;
+  padding:var(--space-2) var(--space-3);
+  border:1px solid var(--line);border-radius:var(--radius-sm);
+  background:var(--surface);color:var(--ink);
+  font:inherit;font-size:var(--text-body);line-height:var(--lh-body);font-weight:var(--weight-semibold);
+  text-align:center;cursor:pointer;
+}
+.owned-schedule-action.primary{border-color:var(--ink);background:var(--ink);color:var(--surface)}
+.owned-schedule-action.danger{
+  border-color:color-mix(in srgb,var(--schedule-danger) 35%,var(--line));
+  color:var(--schedule-danger);
+}
+.owned-schedule-action:disabled{opacity:.5;cursor:default}
+.owned-schedule-action-pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2)}
+.owned-schedule-action-pair.single{grid-template-columns:1fr}
+.owned-schedule-note{
+  margin:0;color:var(--muted);
+  font-size:var(--text-caption);line-height:var(--lh-caption);
+}
+
+/* Moving or skipping a workout asks first, inside the row. */
+.owned-schedule-confirm{
+  display:grid;gap:var(--space-2);
+  padding:var(--space-3);border-radius:var(--radius-sm);
+  background:var(--surface-2);
+}
+.owned-schedule-confirm > strong{font-size:var(--text-body);line-height:var(--lh-body);font-weight:var(--weight-semibold)}
+.owned-schedule-confirm label{display:grid;gap:6px}
+.owned-schedule-confirm label span,
+.owned-schedule-confirm small,
+.owned-schedule-confirm p{
+  margin:0;color:var(--muted);
+  font-size:var(--text-caption);line-height:var(--lh-caption);
+}
+.owned-schedule-confirm input{
+  width:100%;min-height:44px;box-sizing:border-box;
+  padding:var(--space-2) var(--space-3);
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  font:inherit;
+}
+.owned-schedule-error{
+  padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);
+  background:color-mix(in srgb,var(--schedule-danger) 12%,var(--surface));
+  color:var(--schedule-danger);
+  font-size:var(--text-caption);line-height:var(--lh-caption);
+}

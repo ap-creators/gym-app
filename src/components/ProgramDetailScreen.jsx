@@ -8,11 +8,11 @@ import { rescheduleScheduledWorkout, skipScheduledWorkout } from '../lib/schedul
 import { supabase } from '../lib/supabase.js';
 import '../program-detail.css';
 import '../program-participation-controls.css';
-import '../scheduled-workout-controls.css';
 import { formatRussianCount } from '../lib/formatRussianCount.js';
 import { ProgramWorkoutBlock } from './ProgramWorkoutBlock.jsx';
+import { ProgramScheduleList } from './ProgramScheduleList.jsx';
+import { isAllowedStartDate, localToday, startDateHint } from '../lib/programSchedule.js';
 
-const WEEKLY_DAYS = { weekly_mwf: [1, 3, 5], weekly_tts: [2, 4, 6] };
 function BackIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m15 5-7 7 7 7" /></svg>; }
 function PencilIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M4.5 19.5 5.8 14 15.9 3.9a2.1 2.1 0 0 1 3 0l1.2 1.2a2.1 2.1 0 0 1 0 3L10 18.2l-5.5 1.3Z" /><path d="m14.7 5.1 4.2 4.2" /></svg>; }
 function TrashIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 7h16M10 7V4h4v3m-8 0 1 13h10l1-13M10 11v6M14 11v6" /></svg>; }
@@ -20,18 +20,7 @@ function PauseIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="curre
 function ResumeIcon() { return <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="m8 5 11 7-11 7Z" /></svg>; }
 function CloseProgramIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" /></svg>; }
 function CalendarIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="3.5" y="5.5" width="17" height="15" rx="3" /><path d="M8 3.5v4M16 3.5v4M3.5 10h17" /></svg>; }
-function formatDate(value) { return value ? new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${value}T12:00:00`)) : ''; }
-function localToday() { const date = new Date(); return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 10); }
-function isAllowedStartDate(value, mode) { if (!value) return false; const allowed = WEEKLY_DAYS[mode]; return !allowed || allowed.includes(new Date(`${value}T12:00:00`).getDay()); }
-function startDateHint(mode) { if (mode === 'weekly_mwf') return 'Выберите понедельник, среду или пятницу.'; if (mode === 'weekly_tts') return 'Выберите вторник, четверг или субботу.'; return ''; }
 function participationLabel(participation) { if (!participation) return 'Не начата'; if (participation.status === 'paused') return 'На паузе'; if (participation.status === 'completed') return 'Завершена'; if (participation.status === 'cancelled') return 'Отменена'; if (participation.startDate > localToday()) return 'Запланирована'; return 'Активна'; }
-function workoutStatusLabel(item) {
-  if (item.status === 'completed') return 'Выполнена';
-  if (item.status === 'skipped') return 'Пропущена';
-  if (item.status === 'cancelled') return 'Отменена';
-  if (item.scheduledDate && item.scheduledDate < localToday()) return 'Просрочена';
-  return 'Запланирована';
-}
 
 async function attachScheduledSnapshot(program) {
   if (!program?.participation || !program.scheduledWorkouts.length) return program;
@@ -70,11 +59,6 @@ export function ProgramDetailScreen({ programId, onBack, onEdit, onStart, onDele
   const [resumeDate, setResumeDate] = useState(localToday());
   const [resumeError, setResumeError] = useState('');
   const [completeConfirmOpen, setCompleteConfirmOpen] = useState(false);
-  const [rescheduleWorkoutId, setRescheduleWorkoutId] = useState(null);
-  const [rescheduleDate, setRescheduleDate] = useState(localToday());
-  const [skipConfirmId, setSkipConfirmId] = useState(null);
-  const [workoutActionId, setWorkoutActionId] = useState(null);
-  const [workoutActionError, setWorkoutActionError] = useState(null);
   const [detailTab, setDetailTab] = useState('description');
   useEffect(() => {
     if (detailTab === 'schedule' && program?.participation?.status !== 'active') setDetailTab('workouts');
@@ -182,37 +166,6 @@ export function ProgramDetailScreen({ programId, onBack, onEdit, onStart, onDele
     }
   }
 
-  async function handleReschedule(item) {
-    if (!isActive || workoutActionId || !rescheduleDate) return;
-    if (rescheduleDate < localToday()) { setWorkoutActionError({ id: item.id, message: 'Новая дата не может быть в прошлом.' }); return; }
-    if (!isAllowedStartDate(rescheduleDate, program.scheduleMode)) { setWorkoutActionError({ id: item.id, message: startDateHint(program.scheduleMode) }); return; }
-    setWorkoutActionId(item.id); setWorkoutActionError(null);
-    try {
-      await rescheduleScheduledWorkout(item.id, rescheduleDate);
-      await reloadProgram();
-      setRescheduleWorkoutId(null);
-    } catch (actionError) {
-      setWorkoutActionError({ id: item.id, message: actionError?.message || 'Не удалось перенести тренировку.' });
-    } finally {
-      setWorkoutActionId(null);
-    }
-  }
-
-  async function handleSkip(item) {
-    if (!isActive || workoutActionId) return;
-    setWorkoutActionId(item.id); setWorkoutActionError(null);
-    try {
-      await skipScheduledWorkout(item.id);
-      await reloadProgram();
-      setSkipConfirmId(null);
-      setRescheduleWorkoutId(null);
-    } catch (actionError) {
-      setWorkoutActionError({ id: item.id, message: actionError?.message || 'Не удалось пропустить тренировку.' });
-    } finally {
-      setWorkoutActionId(null);
-    }
-  }
-
   async function handleDelete() {
     if (!isUserCreated || deletePending) return;
     setDeletePending(true); setDeleteError('');
@@ -238,8 +191,6 @@ export function ProgramDetailScreen({ programId, onBack, onEdit, onStart, onDele
     }catch(e){setManualWorkoutError(e?.message||'Не удалось отметить тренировку.');}
     finally{setManualWorkoutBusy(false);}
   }
-
-  const preview = participation ? program.scheduledWorkouts : templateWorkouts.map((item, index) => ({ id: item.workout.id, sequenceNumber: index + 1, cycleNumber: isCycle ? 1 : null, weekNumber: item.sourceGroup, workoutName: item.workout.name, scheduledDate: null, exercises: item.workout.exercises }));
 
   return <div className="phone program-detail-phone">
     <header className="program-detail-header program-detail-header-tabs program-detail-header-stacked">
@@ -294,33 +245,17 @@ export function ProgramDetailScreen({ programId, onBack, onEdit, onStart, onDele
       {detailTab === 'schedule' && isActive && <div id="owned-schedule-panel" role="tabpanel" aria-labelledby="owned-schedule-tab">
         <div className="program-schedule-summary">
           <strong>График тренировок</strong>
-          <span>{formatRussianCount(preview.filter(item => item.status === 'completed').length,['тренировка выполнена','тренировки выполнены','тренировок выполнено'])} из {preview.length}</span>
+          <span>{formatRussianCount(program.scheduledWorkouts.filter(item => item.status === 'completed').length,['тренировка выполнена','тренировки выполнены','тренировок выполнено'])} из {program.scheduledWorkouts.length}</span>
         </div>
-        <div className="program-schedule-timeline" aria-label="Расписание тренировок">
-          {preview.map(item => <div key={item.id} className={`program-schedule-timeline-day status-${item.status || 'template'}`}>
-            <span>{item.scheduledDate ? formatDate(item.scheduledDate) : `№ ${item.sequenceNumber}`}</span>
-            <strong>{item.workoutName}</strong>
-          </div>)}
-        </div>
-      <section className="program-detail-section"><div className="program-detail-section-head"><span>{participation ? 'Календарь' : (isCycle ? 'Повторение цикла' : 'Последовательность')}</span><h2>{participation ? 'Запланированные тренировки' : (isCycle ? `${program.cycleRepeatCount} × цикл` : 'Тренировки программы')}</h2></div><div className="program-detail-schedule">{preview.map((item) => {
-        const overdue = Boolean(participation && item.status === 'scheduled' && item.scheduledDate < localToday());
-        const controllable = Boolean(isActive && item.status === 'scheduled');
-        const hasLaterHistory = preview.some((candidate) => candidate.sequenceNumber > item.sequenceNumber && ['completed', 'skipped'].includes(candidate.status));
-        const canRescheduleWorkout = controllable && !hasLaterHistory;
-        const rescheduleOpen = rescheduleWorkoutId === item.id;
-        const skipOpen = skipConfirmId === item.id;
-        return <article className={`scheduled-workout-card status-${item.status ?? 'template'}${overdue ? ' overdue' : ''}`} key={item.id}>
-          <div className="scheduled-workout-main"><div className="program-detail-day">{item.scheduledDate ? new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short' }).format(new Date(`${item.scheduledDate}T12:00:00`)) : `#${item.sequenceNumber}`}</div><div className="program-detail-workout-copy"><small>{isCycle ? `Цикл ${item.cycleNumber ?? 1}` : `Этап ${item.weekNumber}`}</small><strong>{item.workoutName}</strong><span>{formatRussianCount((item.exercises ?? []).length, ['упражнение','упражнения','упражнений'])}</span></div>{participation && <span className={`scheduled-workout-badge${overdue ? ' overdue' : ''}`}>{workoutStatusLabel(item)}</span>}</div>
-          {item.status === 'completed' && <button type="button" className="program-schedule-open-result"
-            onClick={()=>onOpenWorkout?.(item.id)}>Посмотреть / изменить веса</button>}
-          {controllable && <button type="button" className="program-schedule-mark-complete"
-            onClick={()=>{setManualWorkoutId(item.id);setManualWorkoutDate(localToday());setManualWorkoutError('');}}>Отметить выполненной</button>}
-          {controllable && !rescheduleOpen && !skipOpen && <><div className={`scheduled-workout-actions${canRescheduleWorkout ? '' : ' single'}`}>{canRescheduleWorkout && <button type="button" disabled={Boolean(workoutActionId)} onClick={() => { setRescheduleDate(item.scheduledDate < localToday() ? localToday() : item.scheduledDate); setRescheduleWorkoutId(item.id); setSkipConfirmId(null); setWorkoutActionError(null); }}>Перенести</button>}<button className="danger" type="button" disabled={Boolean(workoutActionId)} onClick={() => { setSkipConfirmId(item.id); setRescheduleWorkoutId(null); setWorkoutActionError(null); }}>Пропустить</button></div>{hasLaterHistory && <div className="scheduled-workout-history-note">Перенос недоступен: после этой тренировки уже сохранён результат. Её можно только пропустить.</div>}</>}
-          {canRescheduleWorkout && rescheduleOpen && <div className="scheduled-workout-editor"><label><span>Новая дата</span><input type="date" min={localToday()} value={rescheduleDate} onChange={(event) => { setRescheduleDate(event.target.value); setWorkoutActionError(null); }} /></label>{startDateHint(program.scheduleMode) && <small>{startDateHint(program.scheduleMode)}</small>}<p>Эта и все следующие невыполненные тренировки будут пересчитаны по ритму программы.</p><div><button type="button" disabled={Boolean(workoutActionId)} onClick={() => setRescheduleWorkoutId(null)}>Отмена</button><button className="primary" type="button" disabled={Boolean(workoutActionId) || !rescheduleDate || !isAllowedStartDate(rescheduleDate, program.scheduleMode)} onClick={() => handleReschedule(item)}>{workoutActionId === item.id ? 'Переносим…' : 'Сохранить'}</button></div></div>}
-          {controllable && skipOpen && <div className="scheduled-workout-skip-confirm"><strong>Пропустить тренировку?</strong><span>Она останется в истории со статусом «Пропущена». Остальные даты не изменятся.</span><div><button type="button" disabled={Boolean(workoutActionId)} onClick={() => setSkipConfirmId(null)}>Отмена</button><button className="danger" type="button" disabled={Boolean(workoutActionId)} onClick={() => handleSkip(item)}>{workoutActionId === item.id ? 'Пропускаем…' : 'Да, пропустить'}</button></div></div>}
-          {workoutActionError?.id === item.id && <div className="scheduled-workout-error" role="alert">{workoutActionError.message}</div>}
-        </article>;
-      })}</div></section>
+        <ProgramScheduleList
+          workouts={program.scheduledWorkouts}
+          isCycle={isCycle}
+          scheduleMode={program.scheduleMode}
+          onOpenResult={(item) => onOpenWorkout?.(item.id)}
+          onMarkComplete={(item) => { setManualWorkoutId(item.id); setManualWorkoutDate(localToday()); setManualWorkoutError(''); }}
+          onReschedule={async (item, date) => { await rescheduleScheduledWorkout(item.id, date); await reloadProgram(); }}
+          onSkip={async (item) => { await skipScheduledWorkout(item.id); await reloadProgram(); }}
+        />
       </div>}
     </main>
     {(canStart || canEditProgram) && <footer className={`program-detail-footer${canStart && canEditProgram ? ' two-actions' : ''}`}>
