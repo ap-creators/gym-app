@@ -22,7 +22,7 @@ assert.doesNotMatch(workout, /Тренировка цикла/);
 assert.match(workout, /catalog-workout-exercise-count/);
 assert.doesNotMatch(owned, /<strong>Этап \{group\.number\}<\/strong>/);
 assert.doesNotMatch(owned, /Выполненные тренировки/);
-assert.match(owned, /program-schedule-timeline/);
+assert.match(owned, /<ProgramScheduleList/);
 assert.doesNotMatch(owned, /Редактирование структуры станет/);
 assert.doesNotMatch(owned, /Редактирование недоступно/);
 assert.match(owned, /\{canEditProgram && <button className="program-detail-edit-button"/);
