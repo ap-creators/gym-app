@@ -112,6 +112,14 @@ export function TrainingExerciseBrowser({ refreshKey = 0 }) {
     return options.includes(muscleGroup) ? options : [...options, muscleGroup];
   }, [mine, muscleGroup]);
   const sourceExercises = source === 'base' ? base : mine;
+  // Expose equipment from the imported sheets, including specialised machines
+  // which are not among the initial ten short filter options.
+  const equipmentOptions = useMemo(() => {
+    const extra = [...new Set(sourceExercises.map(item => String(item.equipment || '').trim()))]
+      .filter(value => value && !EXERCISE_EQUIPMENT.includes(value))
+      .sort((a, b) => a.localeCompare(b, 'ru'));
+    return [...EXERCISE_EQUIPMENT, ...extra];
+  }, [sourceExercises]);
   const movementTypes = useMemo(() => exerciseMovementFilterOptions(sourceExercises), [sourceExercises]);
   const hasFilters = muscleGroup !== 'Все' || equipment !== 'Все' || movementType !== 'Все';
   const visible = useMemo(() => filterExerciseList(source === 'base' ? base : mine, {
@@ -174,7 +182,7 @@ export function TrainingExerciseBrowser({ refreshKey = 0 }) {
           <label className="training-exercise-filter-field">
             <span>Оборудование</span>
             <select value={equipment} onChange={event => setEquipment(event.target.value)}>
-              {EXERCISE_EQUIPMENT.map(value => <option key={value} value={value}>{value}</option>)}
+              {equipmentOptions.map(value => <option key={value} value={value}>{value}</option>)}
             </select>
           </label>
           <label className="training-exercise-filter-field">
