@@ -74,9 +74,9 @@ export async function signVariationMedia(axes, signVideoPath) {
 }
 
 
-// The rebuilt leg/chest sheets use K for base technique and L:N for
-// technique changes of the selected variations. Previous editorial variation
-// descriptions remain stored for compatibility but are not part of this block.
+// Rebuilt sheets provide a complete technique in K for exercises without
+// variations and an independent complete technique in L:S for every option.
+// T:AA identify the corresponding variation values.
 const REBUILT_TECHNIQUE_SHEETS = new Set([
   'Упражнения (Ноги) список',
   'Упражнения (Грудь) список',
@@ -86,14 +86,16 @@ export function isRebuiltTechniqueExercise(exercise) {
   return REBUILT_TECHNIQUE_SHEETS.has(exercise?.source_sheet);
 }
 
-export function exerciseTechniqueText(exercise, variation) {
+export function exerciseTechniqueText(exercise, variation, activeAxisIndex = 0) {
   if (isRebuiltTechniqueExercise(exercise)) {
-    // Sheet K is the shared technique; L:N contain modifications for the
-    // chosen values of the variation switches. Do not display option labels
-    // or the retired variation descriptions from the old sheet structure.
-    const base = String(exercise.technique || exercise.description || '').trim();
-    const changes = (variation?.techniqueChanges || []).map(({ text }) => text).filter(Boolean);
-    return [base, ...changes].filter(Boolean).join('\n\n') || 'Техника выполнения пока не добавлена.';
+    const axis = variation?.axes?.[activeAxisIndex] ?? variation?.axes?.[0];
+    const selectedLabel = variation?.selection?.[activeAxisIndex] ?? axis?.options?.[0]?.label;
+    const option = axis?.options?.find(item => item.label === selectedLabel);
+    // Each sheet variation holds its own complete text, not a delta to K.
+    // Multiple variation axes are independent: show the full technique for
+    // the most recently interacted-with axis, never concatenate instructions.
+    const text = option?.technique_full || exercise.technique || exercise.description;
+    return String(text || 'Техника выполнения пока не добавлена.').trim();
   }
   const base = exercise.short_description || exercise.description || exercise.technique
     || exercise.notes || 'Техника выполнения пока не добавлена.';
