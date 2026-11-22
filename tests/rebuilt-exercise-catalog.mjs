@@ -44,7 +44,7 @@ assert.match(library,/REBUILT_BASE_SHEETS = \['Упражнения \(Ноги\)
 assert.match(library,/if \(!isAvailableExercise\(row\)\) continue;/);
 assert.match(details,/training-exercise-variation-axes/);
 assert.match(details,/variation=\{variation\}/);
-const {defaultVariationSelection,variationPresentation,exerciseEquipmentTags,signVariationMedia,exerciseTechniqueText}
+const {defaultVariationSelection,variationPresentation,exerciseEquipmentTags,signVariationMedia,exerciseTechniqueText,isRebuiltTechniqueExercise}
  = await import('../src/lib/exerciseVariationSelection.js');
 const sample={name:'Жим',video_url:'https://example.test/default.mp4',
  variation_axes:[{label:'Хват',options:['прямой',{label:'обратный',description:'Повернуть кисти',video_url:'https://example.test/other.mp4'}]}]};
@@ -59,22 +59,38 @@ assert.match(variationPresentation(lunge,['пол','гантели']).notes,/И�
 const signed=await signVariationMedia([{label:'Хват',options:['прямой',{label:'обратный',video_path:'other.mp4'}]}],
  async path=>'signed://'+path);
 assert.equal(signed[0].options[1].resolvedVideoUrl,'signed://other.mp4');
-// Sheet K is shown first. Only the selected L:N technique changes appear
-// beneath it, rather than superseded option explanations from old columns.
-for (const entry of [legs.exercises[0], chest.exercises[0]]) {
-  const initial = variationPresentation(entry, defaultVariationSelection(entry));
-  const shown = exerciseTechniqueText(entry, initial);
-  assert(shown.startsWith(entry.description), 'Technique begins with sheet column K');
-  for (const change of initial.techniqueChanges) {
-    assert(shown.includes(`${change.axis} — ${change.option}\n${change.text}`));
+// Rebuilt techniques consist only of column K and the selected option changes
+// from columns L:N. Neither variation names nor obsolete descriptions are shown.
+for (const snapshot of [legs, chest]) {
+  for (const entry of snapshot.exercises) {
+    assert(isRebuiltTechniqueExercise(entry));
+    const initial = defaultVariationSelection(entry);
+    for (let axisIndex = 0; axisIndex < entry.variation_axes.length; axisIndex++) {
+      for (const option of entry.variation_axes[axisIndex].options) {
+        const selected = [...initial];
+        selected[axisIndex] = option.label;
+        const presented = variationPresentation(entry, selected);
+        const expected = [entry.description, ...presented.techniqueChanges.map(change => change.text)]
+          .filter(Boolean).join('\n\n');
+        const actual = exerciseTechniqueText(entry, presented);
+        assert.equal(actual, expected, `${entry.name}: selected technique must match the sheet`);
+        assert(!actual.includes('Вариация:'), 'No selected variation heading');
+        assert(!actual.includes('Изменение техники:'), 'No leftover old description heading');
+      }
+    }
+    if (entry.variation_axes.length === 0) {
+      assert.equal(exerciseTechniqueText(entry, variationPresentation(entry, [])), entry.description);
+    }
   }
-  assert(!shown.includes('Изменение техники:'), 'Do not repeat the old joined variation descriptions');
-  const other = [...initial.selection];
-  other[0] = entry.variation_axes[0].options.at(-1).label;
-  const switched = exerciseTechniqueText(entry, variationPresentation(entry, other));
-  assert(switched.includes(entry.variation_axes[0].options.at(-1).technique_change));
-  assert(!switched.includes(`${entry.variation_axes[0].label} — ${initial.selection[0]}\n`));
 }
+// Prefer the technique column even when an older description differs.
+assert.equal(exerciseTechniqueText({
+  source_sheet:'Упражнения (Ноги) список',
+  description:'Старое описание',
+  technique:'Настоящая техника',
+}, { techniqueChanges:[{axis:'Пятки',option:'на полу',text:'Поставьте пятки на пол.'}] }),
+'Настоящая техника\n\nПоставьте пятки на пол.');
+
 const legacyTechnique = { description:'Основная техника',
   variation_axes:[{label:'Хват',options:[{label:'обычный'},{label:'иной',description:'Инструкция к варианту'}]}] };
 assert.match(exerciseTechniqueText(legacyTechnique,
