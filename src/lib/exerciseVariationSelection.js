@@ -80,6 +80,7 @@ export async function signVariationMedia(axes, signVideoPath) {
 const REBUILT_TECHNIQUE_SHEETS = new Set([
   'Упражнения (Ноги) список',
   'Упражнения (Грудь) список',
+  'Упражнения (Руки) список',
 ]);
 
 export function isRebuiltTechniqueExercise(exercise) {
