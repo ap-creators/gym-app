@@ -82,14 +82,21 @@ const REBUILT_TECHNIQUE_SHEETS = new Set([
   'Упражнения (Грудь) список',
 ]);
 
+export function isRebuiltTechniqueExercise(exercise) {
+  return REBUILT_TECHNIQUE_SHEETS.has(exercise?.source_sheet);
+}
+
 export function exerciseTechniqueText(exercise, variation) {
-  const base = exercise.short_description || exercise.description || exercise.technique
-    || exercise.notes || 'Описание пока не добавлено.';
-  if (REBUILT_TECHNIQUE_SHEETS.has(exercise.source_sheet)) {
-    const changes = (variation?.techniqueChanges || [])
-      .map(({ axis, option, text }) => `${axis} — ${option}\n${text}`);
-    return [base, ...changes].filter(Boolean).join('\n\n');
+  if (isRebuiltTechniqueExercise(exercise)) {
+    // Sheet K is the shared technique; L:N contain modifications for the
+    // chosen values of the variation switches. Do not display option labels
+    // or the retired variation descriptions from the old sheet structure.
+    const base = String(exercise.technique || exercise.description || '').trim();
+    const changes = (variation?.techniqueChanges || []).map(({ text }) => text).filter(Boolean);
+    return [base, ...changes].filter(Boolean).join('\n\n') || 'Техника выполнения пока не добавлена.';
   }
+  const base = exercise.short_description || exercise.description || exercise.technique
+    || exercise.notes || 'Техника выполнения пока не добавлена.';
   return [
     variation?.summary ? 'Вариация: ' + variation.summary + '.' : '',
     variation?.notes,
