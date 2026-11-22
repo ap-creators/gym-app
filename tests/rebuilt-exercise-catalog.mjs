@@ -62,7 +62,9 @@ assert.equal(signed[0].options[1].resolvedVideoUrl,'signed://other.mp4');
 // Rebuilt techniques consist only of column K and the selected option changes
 // from columns L:N. Neither variation names nor obsolete descriptions are shown.
 for (const snapshot of [legs, chest]) {
-  for (const entry of snapshot.exercises) {
+  for (const row of snapshot.exercises) {
+    // Snapshot rows do not repeat the sheet name; the DB rows do.
+    const entry = { ...row, source_sheet: snapshot.source_sheet, technique: row.description };
     assert(isRebuiltTechniqueExercise(entry));
     const initial = defaultVariationSelection(entry);
     for (let axisIndex = 0; axisIndex < entry.variation_axes.length; axisIndex++) {
