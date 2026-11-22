@@ -16,7 +16,8 @@ for(const {snap,sheet,gid,count,axes,opts} of [
  assert.equal(snap.imported_count,count);
  assert.equal(snap.exercises.length,count);
  assert.equal(snap.movement_source_column,'J');
- assert.equal(snap.description_source_columns,'K; L:N; O:Q');
+ assert.equal(snap.description_source_columns,'K');
+ assert.equal(snap.variation_technique_source_columns,'L:S; T:AA');
  assert.equal(new Set(snap.exercises.map(e=>e.name.toLocaleLowerCase('ru'))).size,count);
  assert.equal(new Set(snap.exercises.map(e=>e.source_row)).size,count);
  assert(snap.exercises.every(e=>e.name&&e.description&&e.equipment_tag&&e.movement_filter_type));
@@ -24,7 +25,8 @@ for(const {snap,sheet,gid,count,axes,opts} of [
  assert.equal(snap.exercises.reduce((n,e)=>n+e.variation_axes.length,0),axes);
  assert.equal(snap.exercises.reduce((n,e)=>n+e.variation_axes.reduce((m,a)=>m+a.options.length,0),0),opts);
  assert(snap.exercises.every(e=>e.variation_axes.every(a=>a.label&&a.options.every(o=>
-   o.label&&o.variation_description&&o.technique_change&&o.description.includes(o.technique_change)))));
+   o.label&&o.variation_description&&o.technique_change&&o.description.includes(o.technique_change)
+   &&typeof o.technique_full==='string'&&o.technique_full.startsWith('1. ')))));
 }
 assert.equal(legs.exercises.find(e=>e.source_row===91).source_number,null,'Uncertain source number 92? is not silently corrected');
 assert.equal(legs.exercises.find(e=>e.source_row===13).name,'Приседания на BOSU');
@@ -59,39 +61,50 @@ assert.match(variationPresentation(lunge,['пол','гантели']).notes,/И�
 const signed=await signVariationMedia([{label:'Хват',options:['прямой',{label:'обратный',video_path:'other.mp4'}]}],
  async path=>'signed://'+path);
 assert.equal(signed[0].options[1].resolvedVideoUrl,'signed://other.mp4');
-// Rebuilt techniques consist only of column K and the selected option changes
-// from columns L:N. Neither variation names nor obsolete descriptions are shown.
+// The new sheet provides an independent complete technique for each option.
 for (const snapshot of [legs, chest]) {
   for (const row of snapshot.exercises) {
-    // Snapshot rows do not repeat the sheet name; the DB rows do.
     const entry = { ...row, source_sheet: snapshot.source_sheet, technique: row.description };
     assert(isRebuiltTechniqueExercise(entry));
-    const initial = defaultVariationSelection(entry);
-    for (let axisIndex = 0; axisIndex < entry.variation_axes.length; axisIndex++) {
-      for (const option of entry.variation_axes[axisIndex].options) {
-        const selected = [...initial];
-        selected[axisIndex] = option.label;
-        const presented = variationPresentation(entry, selected);
-        const expected = [entry.description, ...presented.techniqueChanges.map(change => change.text)]
-          .filter(Boolean).join('\n\n');
-        const actual = exerciseTechniqueText(entry, presented);
-        assert.equal(actual, expected, `${entry.name}: selected technique must match the sheet`);
-        assert(!actual.includes('Вариация:'), 'No selected variation heading');
-        assert(!actual.includes('Изменение техники:'), 'No leftover old description heading');
-      }
-    }
-    if (entry.variation_axes.length === 0) {
+    const selected = defaultVariationSelection(entry);
+    if (!entry.variation_axes.length) {
       assert.equal(exerciseTechniqueText(entry, variationPresentation(entry, [])), entry.description);
+      continue;
+    }
+    // Verify every option across every axis and distinguish it from the base
+    // and the superseded stitched-together option changes.
+    for (let i = 0; i < entry.variation_axes.length; i++) {
+      for (const option of entry.variation_axes[i].options) {
+        const current = [...selected];
+        current[i] = option.label;
+        const variation = variationPresentation(entry, current);
+        const actual = exerciseTechniqueText(entry, variation, i);
+        assert.equal(actual, option.technique_full, `${entry.name} / ${option.label}`);
+        assert(!actual.includes('Вариация:'), 'No selected variation caption');
+        assert(!actual.includes('Изменение техники:'), 'No older explanation appended');
+      }
     }
   }
 }
-// Prefer the technique column even when an older description differs.
-assert.equal(exerciseTechniqueText({
-  source_sheet:'Упражнения (Ноги) список',
-  description:'Старое описание',
-  technique:'Настоящая техника',
-}, { techniqueChanges:[{axis:'Пятки',option:'на полу',text:'Поставьте пятки на пол.'}] }),
-'Настоящая техника\n\nПоставьте пятки на пол.');
+const customSheetVariant = {
+  source_sheet: 'Упражнения (Ноги) список',
+  description: 'Старое описание',
+  technique: 'Базовая техника',
+  variation_axes: [
+    {label:'Постановка ног',options:[
+      {label:'шире плеч',technique_full:'Полная техника широкой стойки'},
+      {label:'узко',technique_full:'Полная техника узкой стойки'}]},
+    {label:'Пятки',options:[
+      {label:'на полу',technique_full:'Полная техника на полу'},
+      {label:'на возвышении',technique_full:'Полная техника с возвышением'}]},
+  ],
+};
+assert.equal(exerciseTechniqueText(customSheetVariant,
+  variationPresentation(customSheetVariant,['узко','на полу']),0),'Полная техника узкой стойки');
+assert.equal(exerciseTechniqueText(customSheetVariant,
+  variationPresentation(customSheetVariant,['узко','на возвышении']),1),'Полная техника с возвышением');
+assert.equal(exerciseTechniqueText({...customSheetVariant,variation_axes:[]},
+  variationPresentation({...customSheetVariant,variation_axes:[]},[])),'Базовая техника');
 
 const legacyTechnique = { description:'Основная техника',
   variation_axes:[{label:'Хват',options:[{label:'обычный'},{label:'иной',description:'Инструкция к варианту'}]}] };
