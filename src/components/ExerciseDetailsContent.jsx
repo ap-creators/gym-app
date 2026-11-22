@@ -41,7 +41,7 @@ function ExerciseDescription({ exercise, variation }) {
   }, [description, expanded]);
 
   return <section className="training-exercise-detail-description">
-    <h2>Описание</h2>
+    <h2>Техника выполнения</h2>
     <p ref={textRef} className={expanded ? 'training-exercise-description-text' : 'training-exercise-description-text is-clamped'}>{description}</p>
     {expanded && hasExtra && <div className="training-exercise-extra-technique">
       <ExerciseTechnique exercise={exercise} />
