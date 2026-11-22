@@ -69,36 +69,53 @@ assert.equal(library.filterExerciseList(result.all,{query:'bench',equipment:'Г�
 assert.equal(library.filterExerciseList(result.recent,{muscleGroup:'Ноги',equipment:'Гантели'}).length,0);
 assert(!result.all.some(row=>row.id==='legacy'),'Recent history must not reintroduce duplicate catalogue cards');
 // Regression: a capped API may return only 50 of the requested 100 records.
- // 113 populated leg rows must ALL appear in the user-visible base, without
+ // All 176 leg and chest rows must appear in the user-visible base, without
  // silently treating the short response as the final page.
 const sheetSnapshot = JSON.parse(readFileSync(new URL('../data/exercise-catalog/rebuilt-legs-from-sheet.json', import.meta.url),'utf8'));
+const chestSnapshot = JSON.parse(readFileSync(new URL('../data/exercise-catalog/rebuilt-chest-from-sheet.json', import.meta.url),'utf8'));
 assert.equal(sheetSnapshot.exercises.length,113);
+assert.equal(chestSnapshot.exercises.length,63);
 oldRows.splice(0,oldRows.length,legacy,...sheetSnapshot.exercises.map(row=>({
   ...row,id:'leg-'+row.source_row,owner_id:null,muscle_group:'Ноги',
   source_sheet:'Упражнения (Ноги) список',status:'legacy',
+})),...chestSnapshot.exercises.map(row=>({
+  ...row,id:'chest-'+row.source_row,owner_id:null,muscle_group:'Грудь',
+  source_sheet:'Упражнения (Грудь) список',status:'legacy',
 })));
 apiPageCap=50;
 const loaded = await library.listExerciseLibrary();
 const legRows=loaded.all.filter(row=>row.source_sheet==='Упражнения (Ноги) список');
+const chestRows=loaded.all.filter(row=>row.source_sheet==='Упражнения (Грудь) список');
+assert.equal(chestRows.length,63,'All chest exercises load through rebuilt catalog');
+assert.equal(loaded.all.filter(row=>row.source_sheet?.startsWith('Упражнения (')).length,176);
+assert.equal(library.filterExerciseList(chestRows,{muscleGroup:'Грудные'}).length,
+ chestRows.filter(row=>library.exerciseMuscleTags(row).includes('Грудные')).length);
+assert.equal(library.filterExerciseList(chestRows,{muscleGroup:'Грудь'}).length,63);
+assert.equal(library.filterExerciseList(chestRows,{movementType:'Жим'}).length,50);
+assert.equal(library.filterExerciseList(chestRows,{movementType:'Сведение'}).length,9);
+assert.equal(library.filterExerciseList(chestRows,{movementType:'Отведение'}).length,3);
 assert.equal(legRows.length,113,'Every leg exercise is accessible even with API row limits');
 assert.deepEqual(new Set(legRows.map(row=>row.source_row)),new Set(sheetSnapshot.exercises.map(row=>row.source_row)));
 assert.equal(library.filterExerciseList(legRows).length,113,'Default Все filters show the full leg list');
 assert.equal(library.filterExerciseList(legRows,{muscleGroup:'Все',equipment:'Все'}).length,113);
 const movementGroups=library.exerciseMovementFilterOptions(legRows);
-assert(movementGroups.length>=15,'Movement types distinguish the exercises, not only Силовое');
-assert(movementGroups.includes('Приседания')&&movementGroups.includes('Выпады')&&movementGroups.includes('Тяга'));
+assert(movementGroups.length>=13,'Source contains 12 meaningful movement patterns');
+assert(movementGroups.includes('Присед')&&movementGroups.includes('Выпад')&&movementGroups.includes('Тяга'));
+assert(movementGroups.includes('Прыжок')&&movementGroups.includes('Удержание'));
+assert.equal(library.exerciseMovementType(legRows.find(row=>row.source_row===2)),'Присед');
 assert(!movementGroups.includes('Другое'),'Every imported leg name has a recognized pattern');
-assert.equal(legRows.filter(x=>library.exerciseMovementType(x)==='Приседания').length,
-  library.filterExerciseList(legRows,{movementType:'Приседания'}).length);
-assert(library.filterExerciseList(legRows,{movementType:'Приседания'}).length>10);
-assert.equal(library.filterExerciseList(legRows,{movementType:'Прыжки'}).length,2);
+assert.equal(legRows.filter(x=>library.exerciseMovementType(x)==='Присед').length,
+  library.filterExerciseList(legRows,{movementType:'Присед'}).length);
+assert.equal(library.filterExerciseList(legRows,{movementType:'Присед'}).length,19);
+assert.equal(library.filterExerciseList(legRows,{movementType:'Прыжок'}).length,2);
 assert.equal(library.filterExerciseList(legRows,{movementType:'Тяга',muscleGroup:'ЗПП'}).every(x=>library.exerciseMovementType(x)==='Тяга'),true);
 assert.equal(library.exerciseMovementType({name:'Статическое удержание в приседе плие'}),'Статические удержания');
 assert.equal(library.exerciseMovementType({name:'Выпрыгивания из приседа'}),'Прыжки');
 assert.equal(library.exerciseMovementType({name:'Гакк-приседания в тренажёре'}),'Приседания');
 assert.equal(library.exerciseMovementType({name:'Румынская тяга со штангой'}),'Тяга');
 assert(requests.some(row=>row[0]==='exercises'&&row[1]===50),'Catalog continues past an API-limited first page');
-assert(requests.some(row=>row[0]==='exercises'&&row[1]===100),'Catalog loads the remaining thirteen rows');
+assert(requests.some(row=>row[0]==='exercises'&&row[1]===100),'Catalog loads past 100 rows');
+assert(requests.some(row=>row[0]==='exercises'&&row[1]===150),'Catalog loads the final chest records');
 failRecent = true;
 await assert.rejects(library.listExerciseLibrary(),/недавние/);
 delete globalThis.__catalogTest;

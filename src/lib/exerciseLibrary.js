@@ -9,7 +9,7 @@ const EXERCISE_LIST_PAGE_SIZE = 100;
 
 // The base is being rebuilt sheet by sheet. All earlier system IDs remain
 // in the database for program and session FKs but cannot enter pickers.
-export const REBUILT_BASE_SHEETS = ['Упражнения (Ноги) список'];
+export const REBUILT_BASE_SHEETS = ['Упражнения (Ноги) список', 'Упражнения (Грудь) список'];
 const isRebuiltSharedExercise = row => !row?.owner_id
   && row?.status !== 'retired' && REBUILT_BASE_SHEETS.includes(row?.source_sheet);
 const isAvailableExercise = row => row?.owner_id
@@ -34,14 +34,16 @@ const REFERENCED_ROW_ERRORS = ['23503', '23001'];
 // A retired private row stays readable for programs and history, but is no longer offered.
 const isRemovedCustomExercise = row => Boolean(row?.owner_id) && row.status === 'retired';
 
-export const EXERCISE_MUSCLE_GROUPS = ['Все', 'Грудь', 'Плечи', 'Спина', 'Пресс', 'ППБ', 'ЗПП', 'Икроножные', 'Приводящие', 'Бицепс', 'Икры', 'Трицепс', 'Ягодицы', 'Всё тело'];
+export const EXERCISE_MUSCLE_GROUPS = ['Все', 'Грудь', 'Грудные', 'Передняя дельта', 'Средняя дельта', 'Плечи', 'Спина', 'Пресс', 'ППБ', 'ЗПП', 'Икроножные', 'Приводящие', 'Бицепс', 'Икры', 'Трицепс', 'Ягодицы', 'Всё тело'];
 export const EXERCISE_EQUIPMENT = ['Все', 'Гакк', 'Гантели', 'Штанга', 'Смит', 'Турник', 'Свой вес', 'Гравитрон', 'Гири', 'Тренажёр'];
 
 // The imported legs list has movement_type="Силовое" for every row and no
 // movement_pattern_id. Derive the movement pattern from the full exercise name;
 // do not rewrite historical movement_type or change referenced exercise IDs.
 export const EXERCISE_MOVEMENT_TYPES = [
-  'Все', 'Приседания', 'Выпады', 'Жим ногами', 'Зашагивания', 'Разгибания',
+  'Все', 'Присед', 'Выпад', 'Жим', 'Разгибание', 'Сгибание', 'Тяга',
+  'Подъём', 'Сведение', 'Отведение', 'Мах', 'Удержание', 'Прыжок',
+  'Приседания', 'Выпады', 'Жим ногами', 'Зашагивания', 'Разгибания',
   'Сгибания', 'Рывок', 'Тяга', 'Ягодичный мост', 'Подъёмы на носки',
   'Наклоны', 'Сведение', 'Разведение', 'Отведение', 'Махи',
   'Гиперэкстензия', 'Статические удержания', 'Прыжки', 'Другое',

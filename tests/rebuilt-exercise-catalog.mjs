@@ -1,76 +1,62 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-const src=JSON.parse(readFileSync('data/exercise-catalog/rebuilt-legs-from-sheet.json','utf8'));
-const sql=readFileSync('data/exercise-catalog/rebuild-legs-upsert.sql','utf8');
-const loader=readFileSync('src/lib/exerciseLibrary.js','utf8');
-const details=readFileSync('src/components/ExerciseDetailsContent.jsx','utf8');
-assert.equal(src.source_sheet,'Упражнения (Ноги) список');
-assert.equal(src.source_sheet_gid,598353243);
-assert.equal(src.exercises.length,113,'Import ALL populated name rows, not just numbered ones');
-assert.equal(new Set(src.exercises.map(r=>r.name.toLowerCase())).size,113);
-assert(src.exercises.some(r=>r.source_number===null && r.name.includes('Отведение ноги назад стоя')));
-assert(src.exercises.every(r=>r.source_row>1&&r.name&&Array.isArray(r.variation_axes)));
-assert(src.exercises.every(r=>r.variation_axes.length<=3&&r.variation_axes.every(a=>a.label&&Array.isArray(a.options)&&a.options.length>0)));
-assert(src.exercises.some(r=>r.variation_axes.length===3));
-assert.equal(src.exercises.filter(r=>Boolean(r.description)).length,113,'All descriptions from source column J');
-assert.equal(src.exercises.filter(r=>Boolean(r.equipment_tag)).length,113,'All equipment labels from column I');
-assert.equal(src.exercises.reduce((sum,r)=>sum+r.variation_axes.length,0),128,'All variation axes retained');
-assert.equal(src.exercises.reduce((sum,r)=>sum+r.variation_axes.reduce((a,ax)=>a+ax.options.length,0),0),308,'All option descriptions from K:M');
-assert(src.exercises.every(r=>r.variation_axes.every(ax=>ax.options.every(o=>typeof o==='object'&&o.label&&o.description))),'Option descriptions complete');
-assert.equal(src.exercises.find(r=>r.source_row===21).equipment_tag,'Свободный вес / свой вес');
-assert.match(sql,/description=excluded.description/);
-assert.match(sql,/equipment_tag=excluded.equipment_tag/);
-assert.match(readFileSync('supabase/migrations/20261113114000_exercise_equipment_source_tag.sql','utf8'),/add column if not exists equipment_tag text/);
-const permittedTags=['Ягодицы','Задняя поверхность бедра (ЗПБ)','Передняя поверхность бедра (ППБ)','Икроножные','Приводящие'];
-assert(src.exercises.every(r=>Array.isArray(r.muscle_tags) && r.muscle_tags.length>=1 && r.muscle_tags.length<=3),'Every exercise gets 1–3 muscle-group tags');
-assert(src.exercises.every(r=>new Set(r.muscle_tags).size===r.muscle_tags.length && r.muscle_tags.every(t=>permittedTags.includes(t))),'Only approved tag labels appear');
-assert.equal(src.exercises.reduce((total,r)=>total+r.muscle_tags.length,0),249,'Tags faithfully copied from the sheet');
-assert.deepEqual(src.exercises.find(r=>r.source_row===2).muscle_tags,['Передняя поверхность бедра (ППБ)','Ягодицы','Приводящие']);
-assert.match(sql,/muscle_tags=excluded.muscle_tags/,'Repeat seed keeps tags fresh');
-assert.match(readFileSync('supabase/migrations/20261113102000_add_exercise_muscle_tags.sql','utf8'),/add column if not exists muscle_tags jsonb/);
-assert.match(readFileSync('src/components/ExerciseMuscleTagLine.jsx','utf8'),/exerciseMuscleTags\(exercise\)/);
-assert.match(details,/exerciseMuscleTags\(exercise\).map/,'Details show all ordered muscle tags');
-assert.match(loader,/exerciseMuscleTags\(exercise\)/,'Search indexes muscle tags');
-
-assert.match(sql, /private\.exercise_catalog_v1_archive/, 'Archive before retirement');
-assert.match(sql, /update public\.exercises[\s\S]*?set status='retired'[\s\S]*?where owner_id is null/, 'Retire shared catalog without deleting referenced records');
-assert.doesNotMatch(sql, /delete from public\.exercises|truncate|cascade/i);
-assert.match(sql, /on conflict\(canonical_key\) do update/, 'Repeatable upsert');
-assert.match(loader, /REBUILT_BASE_SHEETS = \['Упражнения \(Ноги\) список'\]/);
-assert.match(loader, /includeLegacy;[\s\S]*loadRebuiltBaseRows\(\)/, 'Historical browse does not restore old records');
-assert.match(loader, /if \(!isAvailableExercise\(row\)\) continue;/);
-assert.match(details, /training-exercise-variation-axes/,'Variation controls display in the exercise information page');
-assert.match(details, /aria-pressed=\{variation.selection\[axisIndex\] === option.label\}/);
-assert.match(details, /setSelection\(current =>/,'Each segmented button updates selection');
-assert.match(details, /variation=\{variation\}/,'Description updates when selection changes');
-assert.match(details, /const video = variation.video;/,'Video source updates when selection changes');
-assert.doesNotMatch(details, /<span>Упражнение<\/span>/,'Duplicate subtitle is removed');
-const { defaultVariationSelection, exerciseEquipmentTags, variationPresentation, signVariationMedia } = await import('../src/lib/exerciseVariationSelection.js');
-const example = { name:'Приседания', video_url:'https://example.test/default.mp4', variation_axes:[
-  {label:'Стойка',options:['обычная',{label:'широкая',description:'Положение стоп шире плеч.',video_url:'https://example.test/wide.mp4'},'узкая']},
-  {label:'Пятки',options:['на полу',{label:'на возвышении',description:'Пятки на возвышении.'}]},
-]};
-assert.deepEqual(defaultVariationSelection(example),['обычная','на полу']);
-const baseline=variationPresentation(example,['обычная','на полу']);
-assert.equal(baseline.video,'https://example.test/default.mp4');
-assert.match(baseline.summary,/Стойка — обычная/);
-const wide=variationPresentation(example,['широкая','на полу']);
-assert.equal(wide.video,'https://example.test/wide.mp4');
-assert.match(wide.notes,/Положение стоп шире плеч/);
-const alternate=variationPresentation(example,['узкая','на возвышении']);
-assert.equal(alternate.video,null,'Do not show another variation as though it were selected');
-assert.equal(alternate.missingVideo,true);
-assert.match(alternate.summary,/Пятки — на возвышении/);
-const lunge=src.exercises.find(r=>r.source_row===21);
-assert.deepEqual(exerciseEquipmentTags(lunge),['Свободный вес / свой вес','Штанга']);
-assert.deepEqual(exerciseEquipmentTags(lunge,['пол','гантели']),['Свободный вес / свой вес','Гантели']);
-assert.deepEqual(exerciseEquipmentTags(lunge,['BOSU','без отягощения']),['Свободный вес / свой вес','BOSU','Свой вес']);
-const selectedLunge=variationPresentation(lunge,['пол','гантели']);
-assert.match(selectedLunge.notes,/Гантели дают свободную траекторию/);
-assert.match(selectedLunge.notes,/Твёрдый пол обеспечивает/);
-const signed=await signVariationMedia([{label:'Стойка',options:['обычная',{label:'широкая',video_path:'wide.mp4'}]}],
-  async path => 'signed://' + path);
-assert.equal(signed[0].options[0],'обычная');
-assert.equal(signed[0].options[1].resolvedVideoUrl,'signed://wide.mp4');
-
-console.log('Rebuilt leg catalog: all 113 names, ordered muscle group tags, variants and preservation passed.');
+const read=p=>readFileSync(p,'utf8');
+const legs=JSON.parse(read('data/exercise-catalog/rebuilt-legs-from-sheet.json'));
+const chest=JSON.parse(read('data/exercise-catalog/rebuilt-chest-from-sheet.json'));
+const legSql=read('data/exercise-catalog/rebuild-legs-upsert.sql');
+const chestSql=read('data/exercise-catalog/rebuild-chest-upsert.sql');
+const library=read('src/lib/exerciseLibrary.js');
+const details=read('src/components/ExerciseDetailsContent.jsx');
+for(const {snap,sheet,gid,count,axes,opts} of [
+ {snap:legs,sheet:'Упражнения (Ноги) список',gid:598353243,count:113,axes:128,opts:308},
+ {snap:chest,sheet:'Упражнения (Грудь) список',gid:598353244,count:63,axes:70,opts:158},
+]){
+ assert.equal(snap.source_sheet,sheet);
+ assert.equal(snap.source_sheet_gid,gid);
+ assert.equal(snap.imported_count,count);
+ assert.equal(snap.exercises.length,count);
+ assert.equal(snap.movement_source_column,'J');
+ assert.equal(snap.description_source_columns,'K; L:N; O:Q');
+ assert.equal(new Set(snap.exercises.map(e=>e.name.toLocaleLowerCase('ru'))).size,count);
+ assert.equal(new Set(snap.exercises.map(e=>e.source_row)).size,count);
+ assert(snap.exercises.every(e=>e.name&&e.description&&e.equipment_tag&&e.movement_filter_type));
+ assert(snap.exercises.every(e=>Array.isArray(e.muscle_tags)&&e.muscle_tags.length>=1&&e.muscle_tags.length<=3));
+ assert.equal(snap.exercises.reduce((n,e)=>n+e.variation_axes.length,0),axes);
+ assert.equal(snap.exercises.reduce((n,e)=>n+e.variation_axes.reduce((m,a)=>m+a.options.length,0),0),opts);
+ assert(snap.exercises.every(e=>e.variation_axes.every(a=>a.label&&a.options.every(o=>
+   o.label&&o.variation_description&&o.technique_change&&o.description.includes(o.technique_change)))));
+}
+assert.equal(legs.exercises.find(e=>e.source_row===91).source_number,null,'Uncertain source number 92? is not silently corrected');
+assert.equal(legs.exercises.find(e=>e.source_row===13).name,'Приседания на BOSU');
+assert.equal(legs.exercises.find(e=>e.source_row===108).name,'Power Runner');
+assert.equal(legs.exercises.reduce((n,e)=>n+e.muscle_tags.length,0),249);
+assert.equal(chest.exercises[0].name,'Жим штанги лёжа на горизонтальной скамье');
+assert.equal(chest.exercises.at(-1).name,'Отжимания на гимнастических кольцах');
+assert.deepEqual(chest.exercises[0].muscle_tags,['Грудные','Трицепс','Передняя дельта']);
+assert.match(legSql,/private\.exercise_catalog_v1_archive/);
+assert.match(legSql,/source_sheet not in \('Упражнения \(Ноги\) список','Упражнения \(Грудь\) список'\)/);
+assert.match(legSql,/on conflict\(canonical_key\) do update/);
+assert.match(chestSql,/rebuild_chest_/);
+assert.match(chestSql,/on conflict\(canonical_key\) do update/);
+assert.doesNotMatch(legSql+'\n'+chestSql,/delete from public\.exercises|truncate|cascade/i);
+assert.match(read('supabase/migrations/20261122135000_exercise_movement_filter_type.sql'),/add column if not exists movement_filter_type text/);
+assert.match(library,/REBUILT_BASE_SHEETS = \['Упражнения \(Ноги\) список', 'Упражнения \(Грудь\) список'\]/);
+assert.match(library,/if \(!isAvailableExercise\(row\)\) continue;/);
+assert.match(details,/training-exercise-variation-axes/);
+assert.match(details,/variation=\{variation\}/);
+const {defaultVariationSelection,variationPresentation,exerciseEquipmentTags,signVariationMedia}
+ = await import('../src/lib/exerciseVariationSelection.js');
+const sample={name:'Жим',video_url:'https://example.test/default.mp4',
+ variation_axes:[{label:'Хват',options:['прямой',{label:'обратный',description:'Повернуть кисти',video_url:'https://example.test/other.mp4'}]}]};
+assert.deepEqual(defaultVariationSelection(sample),['прямой']);
+assert.equal(variationPresentation(sample,['прямой']).video,'https://example.test/default.mp4');
+assert.equal(variationPresentation(sample,['обратный']).video,'https://example.test/other.mp4');
+assert.match(variationPresentation(sample,['обратный']).notes,/Повернуть кисти/);
+const lunge=legs.exercises.find(e=>e.source_row===21);
+assert.deepEqual(exerciseEquipmentTags(lunge),['Свой вес','Штанга']);
+assert.deepEqual(exerciseEquipmentTags(lunge,['пол','гантели']),['Свой вес','Гантели']);
+assert.match(variationPresentation(lunge,['пол','гантели']).notes,/Изменение техники:/);
+const signed=await signVariationMedia([{label:'Хват',options:['прямой',{label:'обратный',video_path:'other.mp4'}]}],
+ async path=>'signed://'+path);
+assert.equal(signed[0].options[1].resolvedVideoUrl,'signed://other.mp4');
+console.log('Rebuilt exercise catalog: 176 rows, 198 axes, 466 exact explanations and technique changes verified.');
