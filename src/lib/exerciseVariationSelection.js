@@ -75,8 +75,8 @@ export async function signVariationMedia(axes, signVideoPath) {
 
 
 // Rebuilt sheets provide a complete technique in K for exercises without
-// variations and an independent complete technique in L:S for every option.
-// T:AA identify the corresponding variation values.
+// variations and an independent complete technique for every option.
+// Legs/chest store option text in L:S and labels in T:AA; arms use L:U and V:AE.
 const REBUILT_TECHNIQUE_SHEETS = new Set([
   'Упражнения (Ноги) список',
   'Упражнения (Грудь) список',
