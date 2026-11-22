@@ -42,7 +42,7 @@ assert.match(chestSql,/rebuild_chest_/);
 assert.match(chestSql,/on conflict\(canonical_key\) do update/);
 assert.doesNotMatch(legSql+'\n'+chestSql,/delete from public\.exercises|truncate|cascade/i);
 assert.match(read('supabase/migrations/20261122135000_exercise_movement_filter_type.sql'),/add column if not exists movement_filter_type text/);
-assert.match(library,/REBUILT_BASE_SHEETS = \['Упражнения \(Ноги\) список', 'Упражнения \(Грудь\) список'\]/);
+assert.match(library,/REBUILT_BASE_SHEETS = \['Упражнения \(Ноги\) список', 'Упражнения \(Грудь\) список', 'Упражнения \(Руки\) список'\]/);
 assert.match(library,/if \(!isAvailableExercise\(row\)\) continue;/);
 assert.match(details,/training-exercise-variation-axes/);
 assert.match(details,/variation=\{variation\}/);
