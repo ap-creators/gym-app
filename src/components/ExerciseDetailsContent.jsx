@@ -13,11 +13,11 @@ function isDirectVideo(url) {
 
 const EXTRA_TECHNIQUE_KEYS = ['setup_instructions', 'execution_steps', 'technique_cues', 'common_mistakes', 'safety_notes'];
 
-function ExerciseDescription({ exercise, variation }) {
+function ExerciseDescription({ exercise, variation, activeAxisIndex }) {
   const [expanded, setExpanded] = useState(false);
   const [overflows, setOverflows] = useState(false);
   const textRef = useRef(null);
-  const description = exerciseTechniqueText(exercise, variation);
+  const description = exerciseTechniqueText(exercise, variation, activeAxisIndex);
   const hasExtra = !isRebuiltTechniqueExercise(exercise) && Boolean(
     exercise.family_name_ru || exercise.measurement_note
     || EXTRA_TECHNIQUE_KEYS.some(key => Array.isArray(exercise[key]) && exercise[key].length > 0)
@@ -48,7 +48,11 @@ function ExerciseDescription({ exercise, variation }) {
 
 export function ExerciseDetailsContent({ exercise }) {
   const [selection, setSelection] = useState(() => defaultVariationSelection(exercise));
-  useEffect(() => { setSelection(defaultVariationSelection(exercise)); }, [exercise.id, exercise.variation_axes]);
+  const [activeTechniqueAxisIndex, setActiveTechniqueAxisIndex] = useState(0);
+  useEffect(() => {
+    setSelection(defaultVariationSelection(exercise));
+    setActiveTechniqueAxisIndex(0);
+  }, [exercise.id, exercise.variation_axes]);
   const variation = variationPresentation(exercise, selection);
   const photos = exercise.resolvedPhotoUrls?.length ? exercise.resolvedPhotoUrls
     : exercise.resolvedPhotoUrl ? [exercise.resolvedPhotoUrl] : [];
@@ -73,11 +77,14 @@ export function ExerciseDetailsContent({ exercise }) {
           {axis.options.map(option => <button key={option.label} type="button"
             className={variation.selection[axisIndex] === option.label ? 'active' : ''}
             aria-pressed={variation.selection[axisIndex] === option.label}
-            onClick={() => setSelection(current => {
-              const next = [...current];
-              next[axisIndex] = option.label;
-              return next;
-            })}>{option.label}</button>)}
+            onClick={() => {
+              setActiveTechniqueAxisIndex(axisIndex);
+              setSelection(current => {
+                const next = [...current];
+                next[axisIndex] = option.label;
+                return next;
+              });
+            }}>{option.label}</button>)}
         </div>
       </div>)}
     </section>}
@@ -92,6 +99,7 @@ export function ExerciseDetailsContent({ exercise }) {
         : isDirectVideo(video) ? <video key={video} controls playsInline preload="metadata" src={video} />
         : <a key={video} href={video} target="_blank" rel="noreferrer">Открыть видео упражнения</a>}
     </div>
-    <ExerciseDescription key={exercise.id} exercise={exercise} variation={variation} />
+    <ExerciseDescription key={exercise.id} exercise={exercise} variation={variation}
+      activeAxisIndex={activeTechniqueAxisIndex} />
   </>;
 }
