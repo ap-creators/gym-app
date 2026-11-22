@@ -44,7 +44,7 @@ assert.match(library,/REBUILT_BASE_SHEETS = \['Упражнения \(Ноги\)
 assert.match(library,/if \(!isAvailableExercise\(row\)\) continue;/);
 assert.match(details,/training-exercise-variation-axes/);
 assert.match(details,/variation=\{variation\}/);
-const {defaultVariationSelection,variationPresentation,exerciseEquipmentTags,signVariationMedia}
+const {defaultVariationSelection,variationPresentation,exerciseEquipmentTags,signVariationMedia,exerciseTechniqueText}
  = await import('../src/lib/exerciseVariationSelection.js');
 const sample={name:'Жим',video_url:'https://example.test/default.mp4',
  variation_axes:[{label:'Хват',options:['прямой',{label:'обратный',description:'Повернуть кисти',video_url:'https://example.test/other.mp4'}]}]};
@@ -59,4 +59,24 @@ assert.match(variationPresentation(lunge,['пол','гантели']).notes,/И�
 const signed=await signVariationMedia([{label:'Хват',options:['прямой',{label:'обратный',video_path:'other.mp4'}]}],
  async path=>'signed://'+path);
 assert.equal(signed[0].options[1].resolvedVideoUrl,'signed://other.mp4');
+// Sheet K is shown first. Only the selected L:N technique changes appear
+// beneath it, rather than superseded option explanations from old columns.
+for (const entry of [legs.exercises[0], chest.exercises[0]]) {
+  const initial = variationPresentation(entry, defaultVariationSelection(entry));
+  const shown = exerciseTechniqueText(entry, initial);
+  assert(shown.startsWith(entry.description), 'Technique begins with sheet column K');
+  for (const change of initial.techniqueChanges) {
+    assert(shown.includes(`${change.axis} — ${change.option}\n${change.text}`));
+  }
+  assert(!shown.includes('Изменение техники:'), 'Do not repeat the old joined variation descriptions');
+  const other = [...initial.selection];
+  other[0] = entry.variation_axes[0].options.at(-1).label;
+  const switched = exerciseTechniqueText(entry, variationPresentation(entry, other));
+  assert(switched.includes(entry.variation_axes[0].options.at(-1).technique_change));
+  assert(!switched.includes(`${entry.variation_axes[0].label} — ${initial.selection[0]}\n`));
+}
+const legacyTechnique = { description:'Основная техника',
+  variation_axes:[{label:'Хват',options:[{label:'обычный'},{label:'иной',description:'Инструкция к варианту'}]}] };
+assert.match(exerciseTechniqueText(legacyTechnique,
+  variationPresentation(legacyTechnique,['иной'])), /Инструкция к варианту/);
 console.log('Rebuilt exercise catalog: 176 rows, 198 axes, 466 exact explanations and technique changes verified.');
