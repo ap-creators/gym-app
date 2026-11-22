@@ -41,11 +41,16 @@ export function variationPresentation(exercise, selection) {
   const video = override ? (override.resolvedVideoUrl || override.video_url)
     : changed ? null : (exercise?.resolvedVideoUrl || exercise?.video_url || null);
   const notes = chosen.map(option => String(option.description || '').trim()).filter(Boolean);
+  const techniqueChanges = chosen.flatMap((option, index) => {
+    const text = String(option.technique_change || '').trim();
+    return text ? [{ axis: axes[index].label, option: option.label, text }] : [];
+  });
   return {
     axes,
     selection:chosen.map(o => o.label),
     summary:axes.map((axis, i) => axis.label + ' — ' + chosen[i].label).join('; '),
     notes:[...new Set(notes)].join('\n\n'),
+    techniqueChanges,
     hasVariation:axes.length > 0,
     isAlternate:changed,
     video,
@@ -66,4 +71,28 @@ export async function signVariationMedia(axes, signVideoPath) {
     }));
     return { ...axis, options };
   }));
+}
+
+
+// The rebuilt leg/chest sheets use K for base technique and L:N for
+// technique changes of the selected variations. Previous editorial variation
+// descriptions remain stored for compatibility but are not part of this block.
+const REBUILT_TECHNIQUE_SHEETS = new Set([
+  'Упражнения (Ноги) список',
+  'Упражнения (Грудь) список',
+]);
+
+export function exerciseTechniqueText(exercise, variation) {
+  const base = exercise.short_description || exercise.description || exercise.technique
+    || exercise.notes || 'Описание пока не добавлено.';
+  if (REBUILT_TECHNIQUE_SHEETS.has(exercise.source_sheet)) {
+    const changes = (variation?.techniqueChanges || [])
+      .map(({ axis, option, text }) => `${axis} — ${option}\n${text}`);
+    return [base, ...changes].filter(Boolean).join('\n\n');
+  }
+  return [
+    variation?.summary ? 'Вариация: ' + variation.summary + '.' : '',
+    variation?.notes,
+    base,
+  ].filter(Boolean).join('\n\n');
 }
