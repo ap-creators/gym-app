@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ExercisePhotoGallery } from './ExercisePhotoGallery.jsx';
 import ExerciseTechnique from './ExerciseTechnique.jsx';
 import { exerciseMuscleTags } from '../lib/exerciseLibrary.js';
-import { defaultVariationSelection, exerciseEquipmentTags, exerciseTechniqueText, variationPresentation } from '../lib/exerciseVariationSelection.js';
+import { defaultVariationSelection, exerciseEquipmentTags, exerciseTechniqueText, isRebuiltTechniqueExercise, variationPresentation } from '../lib/exerciseVariationSelection.js';
 import '../training-exercise-browser.css';
 
 function isDirectVideo(url) {
@@ -18,7 +18,7 @@ function ExerciseDescription({ exercise, variation }) {
   const [overflows, setOverflows] = useState(false);
   const textRef = useRef(null);
   const description = exerciseTechniqueText(exercise, variation);
-  const hasExtra = Boolean(
+  const hasExtra = !isRebuiltTechniqueExercise(exercise) && Boolean(
     exercise.family_name_ru || exercise.measurement_note
     || EXTRA_TECHNIQUE_KEYS.some(key => Array.isArray(exercise[key]) && exercise[key].length > 0)
   );
