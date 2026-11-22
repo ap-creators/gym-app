@@ -9,7 +9,7 @@ const EXERCISE_LIST_PAGE_SIZE = 100;
 
 // The base is being rebuilt sheet by sheet. All earlier system IDs remain
 // in the database for program and session FKs but cannot enter pickers.
-export const REBUILT_BASE_SHEETS = ['Упражнения (Ноги) список', 'Упражнения (Грудь) список'];
+export const REBUILT_BASE_SHEETS = ['Упражнения (Ноги) список', 'Упражнения (Грудь) список', 'Упражнения (Руки) список'];
 const isRebuiltSharedExercise = row => !row?.owner_id
   && row?.status !== 'retired' && REBUILT_BASE_SHEETS.includes(row?.source_sheet);
 const isAvailableExercise = row => row?.owner_id
@@ -34,7 +34,7 @@ const REFERENCED_ROW_ERRORS = ['23503', '23001'];
 // A retired private row stays readable for programs and history, but is no longer offered.
 const isRemovedCustomExercise = row => Boolean(row?.owner_id) && row.status === 'retired';
 
-export const EXERCISE_MUSCLE_GROUPS = ['Все', 'Грудь', 'Грудные', 'Передняя дельта', 'Средняя дельта', 'Плечи', 'Спина', 'Пресс', 'ППБ', 'ЗПП', 'Икроножные', 'Приводящие', 'Бицепс', 'Икры', 'Трицепс', 'Ягодицы', 'Всё тело'];
+export const EXERCISE_MUSCLE_GROUPS = ['Все', 'Грудь', 'Грудные', 'Передняя дельта', 'Средняя дельта', 'Плечи', 'Спина', 'Пресс', 'ППБ', 'ЗПП', 'Икроножные', 'Приводящие', 'Бицепс', 'Предплечья', 'Икры', 'Трицепс', 'Ягодицы', 'Всё тело'];
 export const EXERCISE_EQUIPMENT = ['Все', 'Гакк', 'Гантели', 'Штанга', 'Смит', 'Турник', 'Свой вес', 'Гравитрон', 'Гири', 'Тренажёр'];
 
 // The imported legs list has movement_type="Силовое" for every row and no
