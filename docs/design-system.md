@@ -488,3 +488,9 @@ Five equal-sized buttons, from left to right: **Главная → Тренир�
 - Rule: every state of the workout screen opens at its top. `WorkoutSessionScreen` in `src/components/WorkoutSessionScreenV3.jsx` puts `.phone` back to `scrollTop = 0` whenever `entry.mode` changes, in a layout effect, so the bottom is never painted first. The workout's `.phone` has `scroll-behavior: auto`, so nothing is animated.
 - What does not move: saving «Изменить дату и веса» reloads the result in the same state and keeps the scroll, and the exercise information still returns the list to where it was (#65).
 - Check: `tests/workout-result-opens-at-top.mjs` (`test:ui-audit`). On the active workout stand: scroll the list to its end and tap «Завершить тренировку».
+
+## Exercise list: separators in the muscle line — November 2026 (#127)
+- Under an exercise name in «Упражнения» → «База» (and in every exercise picker that shares `ExerciseMuscleTagLine`: the program constructor, «Добавить упражнение» and «Заменить» in a workout) the groups and the equipment were separated by a middle dot drawn by CSS at the start of each tag, so it stuck to the word before it: «Трицепс· Грудные· Передняя дельта· Свой вес».
+- Now the muscle groups are a comma list, and a thin vertical line (1px, `--muted` at 50 % over the surface, 7px on each side) stands between the muscles and the equipment: «Трицепс, Грудные, Передняя дельта | Свой вес». A second implement from the default variation follows the first after a comma: «Свой вес, Штанга». An own exercise without equipment shows only its groups, with no line.
+- The separators are still drawn by CSS in `src/exercise-library-picker.css` from the tag classes (`is-secondary`, `is-equipment`, `is-equipment-extra`); the component writes no separator characters, so the two-line clamp and the aria-label are unchanged.
+- Check: `tests/exercise-tag-separators.mjs` (`test:ui-audit`).
