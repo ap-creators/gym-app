@@ -27,3 +27,29 @@ export function poundsInputToKg(value) {
   if (typeof value !== 'string' || !/^\d+(?:[.,]\d+)?$/.test(value.trim())) return value;
   return round(Number(value.trim().replace(',', '.')) * KG_PER_LB, 3);
 }
+
+// Issue #123: switching the unit of an exercise never converts past workouts on its own. The switch
+// asks «Пересчитать прошлые тренировки?». «Нет» leaves every set done before that moment in the unit
+// that was in use then; `periods` keeps those moments, oldest first: [{ until: ISO time, unit }].
+// A set done before `until` is shown in `unit`; a set done after the last one, in the unit chosen now.
+// «Да» forgets the periods, so every past workout is shown in the new unit.
+const validPeriods = (periods) => (Array.isArray(periods) ? periods : [])
+  .filter((period) => ['kg', 'lb'].includes(period?.unit) && Number.isFinite(Date.parse(period.until)));
+
+export function pastWeightUnit(periods, doneAt, unit) {
+  const time = Date.parse(doneAt);
+  // A set with no time of its own is older than any switch.
+  const period = validPeriods(periods).find((item) => !Number.isFinite(time) || time < Date.parse(item.until));
+  return period ? period.unit : unit;
+}
+
+export function pastUnitPeriodsAfterSwitch(periods, from, convert, now = new Date()) {
+  if (convert) return [];
+  return [...validPeriods(periods), { until: new Date(now).toISOString(), unit: from === 'lb' ? 'lb' : 'kg' }];
+}
+
+// A past weight beside a column of `unit`: the number alone when it is in that unit,
+// and with its own unit when it is not («40 кг» in a column of lbs).
+export const withUnitIfOther = (text, shownUnit, unit) => (
+  text === '' || shownUnit === unit ? text : `${text} ${weightUnitLabel(shownUnit)}`
+);

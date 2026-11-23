@@ -11,6 +11,10 @@ export const muscleGroupDraft = (value) => CUSTOM_EXERCISE_MUSCLE_GROUPS.include
   ? { muscleGroup: value, customMuscleGroup: '' }
   : { muscleGroup: EXERCISE_MUSCLE_GROUP_OTHER, customMuscleGroup: value };
 export const exerciseMuscleGroupFilterOptions = () => EXERCISE_MUSCLE_GROUPS;
+// Exports the screens import from exerciseLibrary.js: without them the stands do not load at all.
+export const exerciseMovementFilterOptions = () => ['Все'];
+export const exerciseMuscleTags = (item) => [item?.display_muscle_group || item?.muscle_group].filter(Boolean);
+export const customExerciseMuscleTagsError = () => '';
 const chosenMuscleGroup = ({ muscleGroup, customMuscleGroup = '' }) =>
   muscleGroup === EXERCISE_MUSCLE_GROUP_OTHER ? customMuscleGroup.trim() : muscleGroup;
 export async function listExerciseLibrary() { return { all: [exercise], recent: [], mine: [] }; }
