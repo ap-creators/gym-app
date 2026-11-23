@@ -540,6 +540,42 @@ export async function getPreviousWorkoutSets(exerciseKeys, currentSessionId = nu
   return found;
 }
 
+// Issue #124: for every exercise of the open workout at once, the notes left on it in completed
+// workouts, newest first. One request however many exercises there are. A note is written rarely and
+// is meant to be found again (a seat setting, «в следующий раз +2,5 кг»), so every completed workout
+// is searched, not only the latest ones. Resolves to Map(exercise key → [{ id, date, note }]).
+export async function getPastExerciseNotes(exerciseKeys, currentSessionId = null) {
+  const keys = new Set((exerciseKeys ?? []).filter(Boolean).map(String));
+  const found = new Map();
+  if (keys.size === 0) return found;
+
+  let noteQuery = supabase
+    .from('workout_session_exercises')
+    .select('id, exercise_id, exercise_name_snapshot, position, note, workout_sessions!inner(id, status, started_at, ended_at)')
+    .eq('workout_sessions.status', 'completed')
+    .not('note', 'is', null)
+    .neq('note', '');
+  if (currentSessionId) noteQuery = noteQuery.neq('workout_session_id', currentSessionId);
+  const { data: noteRows, error } = await withDeadline(Promise.resolve(noteQuery), LOAD_DEADLINE_MS);
+  if (error) throw new Error('Не удалось загрузить прошлые заметки.');
+
+  const rows = [];
+  for (const row of noteRows ?? []) {
+    const key = String(snapshotExerciseKey(row.exercise_id, row.exercise_name_snapshot));
+    const note = String(row.note ?? '').trim();
+    if (!keys.has(key) || !note) continue;
+    const date = row.workout_sessions?.ended_at ?? row.workout_sessions?.started_at ?? null;
+    rows.push({ key, id: row.id, date, note, time: Date.parse(date) || 0, position: row.position ?? 0 });
+  }
+  // The newest workout first; two cards of one workout keep their order in it.
+  rows.sort((a, b) => b.time - a.time || a.position - b.position);
+  for (const { key, id, date, note } of rows) {
+    if (!found.has(key)) found.set(key, []);
+    found.get(key).push({ id, date, note });
+  }
+  return found;
+}
+
 export async function listWorkoutExerciseCatalog() {
   const { data, error } = await supabase
     .from('exercises')
