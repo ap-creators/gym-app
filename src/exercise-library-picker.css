@@ -205,10 +205,24 @@
   line-height:var(--lh-micro);
   font-weight:var(--weight-medium);
 }
-.exercise-library-row-copy .exercise-library-row-tags > span:not(:first-child)::before {
-  content:"·";
-  margin-right:5px;
+/* Separators (#127). The middle dot stuck to the word before it («Трицепс· Грудные»).
+   Muscle groups are now a comma list, a thin vertical line stands between the
+   muscles and the equipment, and a second implement follows the first after a comma. */
+.exercise-library-row-copy .exercise-library-row-tags > span::before {
   color:var(--muted);
+}
+.exercise-library-row-copy .exercise-library-row-tags > span.is-secondary::before,
+.exercise-library-row-copy .exercise-library-row-tags > span.is-equipment-extra::before {
+  content:", ";
+}
+.exercise-library-row-copy .exercise-library-row-tags > span.is-equipment:not(:first-child)::before {
+  content:"";
+  display:inline-block;
+  width:1px;
+  height:.85em;
+  margin:0 7px;
+  vertical-align:-1px;
+  background:color-mix(in srgb,var(--muted) 50%,transparent);
 }
 
 /* Optional second and third muscle groups; keep mobile form compact. */
