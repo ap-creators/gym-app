@@ -24,7 +24,7 @@ const helpers = runInNewContext(
 const { rawDraft, formatIssue } = helpers;
 const original = [
   "Правки по приложению Gym App",
-  ...Array.from({ length: 180 }, (_, i) =>
+  ...Array.from({ length: 120 }, (_, i) =>
     "Упражнение " + (i + 1) + ": при смене вариации обязательно сохранить технику, теги и веса."),
 ].join("\n");
 assert.ok(original.length > 6000 && original.length < 12000);
