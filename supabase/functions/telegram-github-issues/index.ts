@@ -34,6 +34,9 @@ const issueApi = (project: ProjectKey) =>
   "https://api.github.com/repos/" + REPOSITORIES[project].fullName + "/issues";
 const projectTitle = (project: ProjectKey) => REPOSITORIES[project].title;
 const MAX_MESSAGE_LENGTH = 4000;
+const MAX_TASK_LENGTH = 50000;
+const MAX_AI_INPUT_LENGTH = 12000;
+const MAX_ISSUE_BODY_LENGTH = 60000;
 const MAX_IMAGES = 6;
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 const BUCKET = "telegram-issue-screenshots";
@@ -93,6 +96,11 @@ async function telegramSend(token: string, chatId: number, text: string, threadI
     signal: AbortSignal.timeout(12000),
   });
   if (!res.ok) throw new Error(`Telegram sendMessage HTTP ${res.status}`);
+}
+
+function combineTaskText(previous: string, incoming: string): string | null {
+  const combined = [previous, incoming].filter(Boolean).join("\n\n");
+  return combined.length <= MAX_TASK_LENGTH ? combined : null;
 }
 
 function rawDraft(input: string): IssueDraft {
@@ -201,11 +209,18 @@ function formatIssue(draft: IssueDraft, marker: string, screenshotUrls: string[]
     P2: "функциональность / улучшение",
   };
   const parts: string[] = [];
-  if (draft.problem) parts.push(`## Проблема\n${draft.problem}`);
-  parts.push("## Что требуется\n" + draft.tasks.map((s) => `- ${s}`).join("\n"));
-  if (draft.criteria.length) {
-    parts.push("## Критерии готовности\n" +
-      draft.criteria.map((s) => `- [ ] ${s}`).join("\n"));
+  const original = originalText.trim();
+  // Plain-text fallback already contains the entire task in draft.tasks[0].
+  // Do not repeat 50k characters a second time in the same GitHub Issue.
+  const isUnformatted = Boolean(original) && !draft.problem && !draft.criteria.length &&
+    draft.tasks.length === 1 && draft.tasks[0].trim() === original;
+  if (!isUnformatted) {
+    if (draft.problem) parts.push(`## Проблема\n${draft.problem}`);
+    parts.push("## Что требуется\n" + draft.tasks.map((s) => `- ${s}`).join("\n"));
+    if (draft.criteria.length) {
+      parts.push("## Критерии готовности\n" +
+        draft.criteria.map((s) => `- [ ] ${s}`).join("\n"));
+    }
   }
   parts.push(`**Приоритет:** ${draft.priority} — ${descriptions[draft.priority]}.`);
   if (screenshotUrls.length) {
@@ -215,8 +230,8 @@ function formatIssue(draft: IssueDraft, marker: string, screenshotUrls: string[]
   }
   // Keep the complete source even if AI formatting omits a detail.
   // This also makes the original recoverable without relying on Telegram history.
-  if (originalText.trim()) {
-    parts.push("## Исходное описание (дословно)\n\n" + originalText.trim());
+  if (original) {
+    parts.push("## Исходное описание (дословно)\n\n" + original);
   }
   parts.push("_Создано через Telegram-бота._");
   parts.push(marker);
@@ -263,12 +278,19 @@ async function findExisting(token: string, project: ProjectKey, marker: string):
 }
 
 async function createIssue(token: string, project: ProjectKey, draft: IssueDraft, marker: string, screenshotUrls: string[] = [], originalText = "") {
+  const preparedBody = formatIssue(draft, marker, screenshotUrls, originalText);
+  // GitHub limits Issue bodies. Keep the entire original, not a truncated AI
+  // summary, if formatted output would exceed a conservative safe size.
+  const body = preparedBody.length <= MAX_ISSUE_BODY_LENGTH
+    ? preparedBody
+    : formatIssue(rawDraft(originalText), marker, screenshotUrls, originalText);
+  if (body.length > MAX_ISSUE_BODY_LENGTH) throw new Error("GITHUB_ISSUE_BODY_LIMIT");
   const res = await githubRequest(token, issueApi(project), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       title: draft.title,
-      body: formatIssue(draft, marker, screenshotUrls, originalText),
+      body,
     }),
   });
   if (!res.ok) {
@@ -417,8 +439,8 @@ async function createFromMessage(
     await telegramSend(botToken, chatId, "Сначала добавь текстовое описание задачи.", threadId);
     return;
   }
-  if (description.length > 12000) {
-    await telegramSend(botToken, chatId, "Описание слишком длинное. Максимум 12000 символов.", threadId);
+  if (description.length > MAX_TASK_LENGTH) {
+    await telegramSend(botToken, chatId, "Описание слишком длинное. Максимум " + MAX_TASK_LENGTH + " символов.", threadId);
     return;
   }
   const digest = await crypto.subtle.digest("SHA-256",
@@ -451,15 +473,25 @@ async function createFromMessage(
   // created. Preserve the raw description and report the fallback clearly.
   let draft: IssueDraft;
   let usedPlainTextFallback = false;
-  try {
-    draft = await runIssueStage("CLAUDE", () => makeDraft(description, screenshots, project));
-  } catch (error) {
-    console.warn("Claude formatting unavailable; using complete original task", {
-      reason: error instanceof Error ? error.message.slice(0, 100) : "UnknownError",
-      descriptionLength: description.length,
-    });
+  let skippedClaudeForLength = false;
+  if (description.length > MAX_AI_INPUT_LENGTH) {
+    // Claude may exceed its output limit on very long requirements lists.
+    // This is deliberate, not an error: always create the Issue with its
+    // original text rather than paying for unreliable formatting.
     draft = rawDraft(description);
     usedPlainTextFallback = true;
+    skippedClaudeForLength = true;
+  } else {
+    try {
+      draft = await runIssueStage("CLAUDE", () => makeDraft(description, screenshots, project));
+    } catch (error) {
+      console.warn("Claude formatting unavailable; using complete original task", {
+        reason: error instanceof Error ? error.message.slice(0, 100) : "UnknownError",
+        descriptionLength: description.length,
+      });
+      draft = rawDraft(description);
+      usedPlainTextFallback = true;
+    }
   }
   const created = await runIssueStage("GITHUB_CREATE", () =>
     createIssue(repositoryToken, project, draft, marker, screenshots, description));
@@ -478,7 +510,11 @@ async function createFromMessage(
     await telegramSend(botToken, chatId,
       "✅ Issue #" + created.number + " создан — " + projectTitle(project) + "\n\n" + draft.title +
       (screenshots.length ? "\n📎 Скриншотов: " + screenshots.length : "") +
-      (usedPlainTextFallback ? "\n⚠️ Claude не оформил текст; Issue создан без форматирования, исходный текст сохранён целиком." : "") +
+      (skippedClaudeForLength
+        ? "\nℹ️ Длинное ТЗ добавлено целиком без обработки Claude."
+        : usedPlainTextFallback
+          ? "\n⚠️ Claude не оформил текст; Issue создан без форматирования, исходный текст сохранён целиком."
+          : "") +
       "\n\n" + created.url, threadId);
   } catch (error) {
     console.error("GitHub Issue created; Telegram confirmation failed", {
@@ -499,6 +535,8 @@ const RULES = [
   "🏋️ Gym App / 🐾 Рядом — выбор проекта для текущего черновика.",
   "Можно также использовать команды /gym и /ryadom.",
   "📝 Пришли текст и до 6 скриншотов в любом порядке.",
+  "Одно сообщение — до 4000 символов; одна задача — до 50000 символов.",
+  "ТЗ длиннее 12000 символов сохраняется целиком без обработки Claude.",
   "✅ Отправить — создать Issue и получить ссылку.",
   "❌ Отмена — удалить незавершённый черновик.",
   "📖 Правила — показать эту памятку.",
@@ -830,6 +868,11 @@ async function processMessage(
       await send("Лимит — 6 скриншотов на одну задачу.");
       return;
     }
+    const caption = message.caption?.trim() || "";
+    if (pending && caption && pending.description.length + caption.length + 4 > MAX_TASK_LENGTH) {
+      await send("Лимит описания — " + MAX_TASK_LENGTH + " символов. Уменьши подпись к скриншоту.");
+      return;
+    }
     const image: ImageRef = {
       fileId: file.file_id, messageId: message.message_id!,
       mime: photo ? "image/jpeg" : document?.mime_type || "image/png",
@@ -872,15 +915,22 @@ async function processMessage(
       await send("Слишком длинное сообщение. Максимум " + MAX_MESSAGE_LENGTH + " символов.");
       return;
     }
+    const description = combineTaskText(pending?.description || "", original);
+    if (description === null) {
+      const remaining = Math.max(0, MAX_TASK_LENGTH - (pending?.description.length || 0));
+      await send("Лимит одной задачи — " + MAX_TASK_LENGTH +
+        " символов. Текст не добавлен; осталось около " + remaining +
+        " символов. Сократи сообщение или создай отдельную задачу.");
+      return;
+    }
     if (pending?.composing) {
-      const saved = await savePending(admin, scopeId, {
-        description: [pending.description, original].filter(Boolean).join("\n\n"),
-      }, pending);
-      await send("📝 Текст добавлен. Скриншотов: " + saved.images.length +
+      const saved = await savePending(admin, scopeId, { description }, pending);
+      await send("📝 Текст добавлен (" + saved.description.length + "/" + MAX_TASK_LENGTH +
+        " символов). Скриншотов: " + saved.images.length +
         ". Для создания нажми «✅ Отправить».");
     } else {
       await createFromMessage(admin, botToken, githubToken, chatId, message.message_id!,
-        [pending?.description || "", original].filter(Boolean).join("\n\n"), pending, threadId);
+        description, pending, threadId);
     }
     return;
   }
