@@ -1,0 +1,29 @@
+name: Telegram GitHub Issues reliability
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/functions/telegram-github-issues/**'
+      - 'tests/telegram-github-long-issues.mjs'
+      - '.github/workflows/telegram-github-issues-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/telegram-github-issues/**'
+      - 'tests/telegram-github-long-issues.mjs'
+      - '.github/workflows/telegram-github-issues-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify long messages survive AI formatting errors
+        run: node tests/telegram-github-long-issues.mjs
