@@ -1,0 +1,91 @@
+/* Issue #124: notes from earlier workouts, seen during a workout.
+   The empty note field shows the last one in grey, and a button beside the field lists them all.
+   The grey note is an element laid over the field, not the field's placeholder: a textarea cannot
+   end its placeholder in an ellipsis, and a long note would be cut mid-letter or make the field grow.
+   Type scale and theme tokens only, so everything follows the dark theme. */
+
+/* The note field and, beside it, the button that opens the past notes. */
+.exercise-card-note-row {
+  position: relative;
+  margin-top: var(--space-3);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  gap: 6px;
+  align-items: start;
+}
+.exercise-card-note-row .exercise-card-note-field { margin-top: 0; }
+
+/* As high as the one-line field and level with it: the caption «Заметка» and its gap are above. */
+.exercise-card-past-notes {
+  width: 36px;
+  height: 36px;
+  margin-top: calc(var(--lh-micro) + var(--space-1));
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.exercise-card-past-notes svg { width: 20px; height: 20px; }
+/* Nothing to read yet: the button stays, quieter. */
+.exercise-card-past-notes.empty { color: var(--muted); }
+
+/* The last note over the empty field is a hint, like last time's weight in a set row (#100): one
+   grey line that ends in an ellipsis when it does not fit, so the field keeps its height. It sits
+   exactly where the field's own text starts (1px border, 7px and 12px padding, under the caption and
+   its gap), in the field's 16px, and lets every tap through to the field. The sheet has the note in full. */
+.exercise-card-note-last {
+  position: absolute;
+  top: calc(var(--lh-micro) + var(--space-1) + 8px);
+  left: 13px;
+  right: calc(36px + 6px + 13px);
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: .75;
+  pointer-events: none;
+}
+/* The field's own «…» gives way to it. */
+.exercise-card-note-row:has(.exercise-card-note-last) .exercise-card-note::placeholder { color: transparent; }
+
+/* The sheet «Прошлые заметки»: each note in full under its date. */
+.past-notes-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.past-notes-list li {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: var(--space-1);
+}
+.past-notes-list li:last-child { border-bottom: 0; }
+.past-notes-list span {
+  color: var(--muted);
+  font-size: var(--text-micro);
+  line-height: var(--lh-micro);
+  font-weight: var(--weight-semibold);
+}
+.past-notes-list p {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.past-notes-modal .history-empty {
+  font-size: var(--text-caption);
+  line-height: var(--lh-caption);
+}

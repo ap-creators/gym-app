@@ -171,6 +171,28 @@ export async function getPreviousWorkoutSets(exerciseKeys) {
   if (!withPrevious) return new Map();
   return new Map(exerciseKeys.map((key) => [key, previousSetsOf(Number(String(key).replace('catalog-', '')))]));
 }
+// Past notes (#124), with `previous=1`: the first exercise has a short one from last week and two
+// older ones, the second a long one, the others none. `notes=fail`: the notes do not load, with the
+// workout or on a tap on the button, until `window.__notesOnline = true` is set in the console.
+const notesFail = params.get('notes') === 'fail';
+function pastNotesOf(index) {
+  const daysAgo = (days) => new Date(Date.now() - days * 86400000).toISOString();
+  if (index === 0) return [
+    { id: 'note-0-a', date: daysAgo(7), note: 'Сиденье 4, валик 2. В следующий раз +2,5 кг' },
+    { id: 'note-0-b', date: daysAgo(21), note: 'Тянуло левое колено, снизила вес' },
+    { id: 'note-0-c', date: daysAgo(400), note: 'Сиденье 4, валик 2' },
+  ];
+  if (index === 1) return [
+    { id: 'note-1-a', date: daysAgo(14), note: 'Хват чуть шире плеч, локти вести вниз и назад.\nПоследние два повтора с помощью, держать корпус ровно и не раскачиваться. На следующей тренировке попробовать лямки и добавить один подход, если останутся силы после разминки.' },
+  ];
+  return [];
+}
+export async function getPastExerciseNotes(exerciseKeys) {
+  await pause(400);
+  if (notesFail && !window.__notesOnline) throw new Error('Не удалось загрузить прошлые заметки.');
+  if (!withPrevious) return new Map();
+  return new Map(exerciseKeys.map((key) => [key, pastNotesOf(Number(String(key).replace('catalog-', '')))]).filter(([, notes]) => notes.length));
+}
 export async function replaceSessionExercise() { await pause(); }
 function buildCompletedEntry() {
   const clock = readClock();
