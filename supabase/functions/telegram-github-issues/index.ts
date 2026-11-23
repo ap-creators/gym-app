@@ -134,7 +134,7 @@ async function makeDraft(input: string, screenshotUrls: string[] = [], project: 
     },
     body: JSON.stringify({
       model: Deno.env.get("ANTHROPIC_MODEL") || "claude-sonnet-5-5",
-      max_tokens: 2500,
+      max_tokens: 8000,
       output_config: { format: { type: "json_schema", schema } },
       system:
         "Ты создаёшь GitHub Issues для русскоязычного " +
@@ -194,7 +194,7 @@ async function makeDraft(input: string, screenshotUrls: string[] = [], project: 
   };
 }
 
-function formatIssue(draft: IssueDraft, marker: string, screenshotUrls: string[] = []) {
+function formatIssue(draft: IssueDraft, marker: string, screenshotUrls: string[] = [], originalText = "") {
   const descriptions: Record<string, string> = {
     P0: "критично (блокирующий дефект)",
     P1: "высокий",
@@ -212,6 +212,11 @@ function formatIssue(draft: IssueDraft, marker: string, screenshotUrls: string[]
     parts.push("## Скриншоты\n" + screenshotUrls.map((url, index) =>
       "![Скриншот " + (index + 1) + "](" + url + ")"
     ).join("\n\n"));
+  }
+  // Keep the complete source even if AI formatting omits a detail.
+  // This also makes the original recoverable without relying on Telegram history.
+  if (originalText.trim()) {
+    parts.push("## Исходное описание (дословно)\n\n" + originalText.trim());
   }
   parts.push("_Создано через Telegram-бота._");
   parts.push(marker);
@@ -257,13 +262,13 @@ async function findExisting(token: string, project: ProjectKey, marker: string):
   return null;
 }
 
-async function createIssue(token: string, project: ProjectKey, draft: IssueDraft, marker: string, screenshotUrls: string[] = []) {
+async function createIssue(token: string, project: ProjectKey, draft: IssueDraft, marker: string, screenshotUrls: string[] = [], originalText = "") {
   const res = await githubRequest(token, issueApi(project), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       title: draft.title,
-      body: formatIssue(draft, marker, screenshotUrls),
+      body: formatIssue(draft, marker, screenshotUrls, originalText),
     }),
   });
   if (!res.ok) {
@@ -442,9 +447,22 @@ async function createFromMessage(
     ? await runIssueStage("SCREENSHOTS", () => saveScreenshots(admin, botToken, pending.images, pending.batch_id))
     : [];
   // Claude sees image URLs and the description, while GitHub Issue embeds images.
-  const draft = await runIssueStage("CLAUDE", () => makeDraft(description, screenshots, project));
+  // An invalid/truncated model response must NEVER prevent an Issue being
+  // created. Preserve the raw description and report the fallback clearly.
+  let draft: IssueDraft;
+  let usedPlainTextFallback = false;
+  try {
+    draft = await runIssueStage("CLAUDE", () => makeDraft(description, screenshots, project));
+  } catch (error) {
+    console.warn("Claude formatting unavailable; using complete original task", {
+      reason: error instanceof Error ? error.message.slice(0, 100) : "UnknownError",
+      descriptionLength: description.length,
+    });
+    draft = rawDraft(description);
+    usedPlainTextFallback = true;
+  }
   const created = await runIssueStage("GITHUB_CREATE", () =>
-    createIssue(repositoryToken, project, draft, marker, screenshots));
+    createIssue(repositoryToken, project, draft, marker, screenshots, description));
   // An Issue already exists: cleanup or Telegram notification failures must
   // never be misreported to the user as "Issue could not be created".
   if (pending) {
@@ -460,6 +478,7 @@ async function createFromMessage(
     await telegramSend(botToken, chatId,
       "✅ Issue #" + created.number + " создан — " + projectTitle(project) + "\n\n" + draft.title +
       (screenshots.length ? "\n📎 Скриншотов: " + screenshots.length : "") +
+      (usedPlainTextFallback ? "\n⚠️ Claude не оформил текст; Issue создан без форматирования, исходный текст сохранён целиком." : "") +
       "\n\n" + created.url, threadId);
   } catch (error) {
     console.error("GitHub Issue created; Telegram confirmation failed", {
