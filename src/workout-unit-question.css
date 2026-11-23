@@ -1,0 +1,9 @@
+/* Issue #123: switching «кг» ↔ «lbs» asks «Пересчитать прошлые тренировки?». The question itself is
+   the shared .reorder-scope-card; this file styles only what «Нет» leaves on the exercise card.
+   Last time's weight kept in another unit names it («40 кг» in a column of lbs). It is set smaller than
+   the other grey values: a weight cell is 75px wide inside on a 375px phone, and «134.99 lbs» at the
+   cell's 16px would not fit. Colour and weight come from workout-previous-hints.css. */
+.workout-exercise-card.v3 .exercise-set-row input[data-past-unit]::placeholder,
+.workout-exercise-card.v3 .result-set-v2 input[data-past-unit]::placeholder {
+  font-size: var(--text-body);
+}

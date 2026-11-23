@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {parseMetricInput, resultFieldsV2, validateResultV2} from '../lib/exerciseResultsV2.js';
 import {markResultDraft} from '../lib/resultDraftGuard.js';
 import {previousResultV2Value} from '../lib/previousWorkoutHints.js';
-import {poundsInputToKg, toDisplayWeight, weightUnitLabel} from '../lib/weightUnits.js';
+import {poundsInputToKg, toDisplayWeight, weightUnitLabel, withUnitIfOther} from '../lib/weightUnits.js';
 
 // The same icons as the other set rows of the exercise card.
 const CheckIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>;
@@ -34,7 +34,7 @@ export function ResultSetV2Head({ contract, unit = 'kg' }) {
   </div>;
 }
 
-export default function ResultSetV2({set,previous=null,unit='kg',contract,configurationKeyValue='standard',equipmentInstanceId=null,dragging=false,handleProps,onSave,onDelete}) {
+export default function ResultSetV2({set,previous=null,unit='kg',previousUnit=unit,contract,configurationKeyValue='standard',equipmentInstanceId=null,dragging=false,handleProps,onSave,onDelete}) {
   const initial = set.resultV2 || {...contract,metric_version:'v2',weight_unit:'kg',configuration_key:configurationKeyValue,equipment_instance_id:equipmentInstanceId,set_type:set.setType,completed:false};
   const [draft,setDraft] = useState(initial);
   const [dirty,setDirty] = useState(false);
@@ -54,7 +54,12 @@ export default function ResultSetV2({set,previous=null,unit='kg',contract,config
   useEffect(()=>{setTypedPounds({});},[unit]);
   const inPounds = field => unit==='lb'&&WEIGHT_FIELDS.includes(field);
   const shownValue = field => !inPounds(field) ? draft[field]??'' : typedPounds[field]??toDisplayWeight(draft[field],unit);
-  const shownHint = field => {const hint=previousResultV2Value(previous,field,draft.load_mode);return inPounds(field)?toDisplayWeight(hint,unit):hint;};
+  // Issue #123: last time's weight is shown in the unit kept for that workout, named when it is not the column's.
+  const shownHint = field => {
+    const hint=previousResultV2Value(previous,field,draft.load_mode);
+    if(!WEIGHT_FIELDS.includes(field))return hint;
+    return withUnitIfOther(previousUnit==='lb'?toDisplayWeight(hint,previousUnit):hint,previousUnit,unit);
+  };
   function change(field,value){
     if(!inPounds(field))return patch(field,value);
     setTypedPounds(current=>({...current,[field]:value}));
@@ -90,7 +95,7 @@ export default function ResultSetV2({set,previous=null,unit='kg',contract,config
     <div className="result-set-v2-fields" style={{ gridTemplateColumns: metricColumns(draft) }}>
       {fields.map(field=><label key={field}>
         {/* Issue #100: an empty field shows last time's value of the same set in grey; with none, it stays empty. */}
-        <input aria-label={fieldLabel(field,draft.load_mode,unit)} inputMode={field==='reps'?'numeric':'decimal'} placeholder={shownHint(field)} value={shownValue(field)} onChange={e=>change(field,e.target.value)} disabled={saving}/>
+        <input aria-label={fieldLabel(field,draft.load_mode,unit)} inputMode={field==='reps'?'numeric':'decimal'} placeholder={shownHint(field)} value={shownValue(field)} data-past-unit={previousUnit!==unit&&WEIGHT_FIELDS.includes(field)&&shownHint(field)!==''?previousUnit:undefined} onChange={e=>change(field,e.target.value)} disabled={saving}/>
       </label>)}
       {hasSide(draft)&&<label className="result-set-v2-side"><select aria-label="Сторона выполнения" value={draft.side||''} disabled={saving||Boolean(set.resultV2)} onChange={e=>patch('side',e.target.value)}><option value="">—</option><option value="left">Л</option><option value="right">П</option></select></label>}
     </div>

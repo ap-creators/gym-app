@@ -29,7 +29,7 @@ for (const path of sources('src')) {
   assert.ok(!/\(lb\)|[\d}] lb\b|, lb\b/.test(text), `${path}: «lb» inside a label`);
   assert.ok(!/\? *'lb' *: *'кг'/.test(text), `${path}: a label picked by hand instead of weightUnitLabel`);
 }
-assert.match(screen, /import \{ fromDisplayWeight, toDisplayWeight, weightUnitLabel \} from '\.\.\/lib\/weightUnits\.js';/);
+assert.match(screen, /import \{ fromDisplayWeight, [\w, ]*toDisplayWeight, weightUnitLabel[\w, ]* \} from '\.\.\/lib\/weightUnits\.js';/);
 // The switch «Единица измерения веса» of the exercise menu: «кг» and «lbs».
 assert.match(screen, /<span>Единица измерения веса<\/span><div className="exercise-unit-toggle"><button className=\{unit === 'kg' \? 'active' : ''\} type="button" onClick=\{\(\) => onUnitChange\('kg'\)\}>\{weightUnitLabel\('kg'\)\}<\/button><button className=\{unit === 'lb' \? 'active' : ''\} type="button" onClick=\{\(\) => onUnitChange\('lb'\)\}>\{weightUnitLabel\('lb'\)\}<\/button>/);
 // The column head and the field of a weight × reps row, and the weights of «История».
@@ -56,7 +56,9 @@ assert.match(resultSet, /const shownValue = field => !inPounds\(field\) \? draft
 assert.match(resultSet, /setTypedPounds\(current=>\(\{\.\.\.current,\[field\]:value\}\)\);\n\s*patch\(field,poundsInputToKg\(value\)\);/);
 assert.match(resultSet, /useEffect\(\(\)=>\{setTypedPounds\(\{\}\);\},\[unit\]\);/, 'switching the unit shows the stored value again, converted');
 assert.match(resultSet, /weight_unit:'kg'/, 'a result is stored in kilograms whatever the shown unit');
-assert.match(resultSet, /return inPounds\(field\)\?toDisplayWeight\(hint,unit\):hint;/, 'last time\'s value is shown in the same unit');
+// Last time's value is in the unit kept for that workout (#123), which is the column's unless the user chose otherwise.
+assert.match(resultSet, /previousUnit=unit,/);
+assert.match(resultSet, /return withUnitIfOther\(previousUnit==='lb'\?toDisplayWeight\(hint,previousUnit\):hint,previousUnit,unit\);/);
 
 assert.equal(poundsInputToKg('100'), 45.359);
 assert.equal(poundsInputToKg('22,5'), 10.206, 'a decimal comma is a decimal point');
@@ -81,6 +83,6 @@ assert.equal(formatResultV2(dumbbells), '10.206 кг / снаряд · 12 пов
 assert.equal(formatResultV2(dumbbells, 'lb'), '22.5 lbs / снаряд · 12 повт.');
 assert.equal(formatResultV2({ assistance_weight: 20, reps: 8 }, 'lb'), 'помощь 44.09 lbs · 8 повт.');
 assert.equal(formatResultV2({ assistance_weight: 20, reps: 8 }, 'kg'), 'помощь 20 кг · 8 повт.');
-assert.match(screen, /formatResultV2\(set\.resultV2, unit\)/);
+assert.match(screen, /formatResultV2\(set\.resultV2, shownUnit\)/);
 
 console.log('weight unit labels: ok');

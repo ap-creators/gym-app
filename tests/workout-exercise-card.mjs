@@ -56,8 +56,9 @@ assert.doesNotMatch(resultSet, /<label key=\{field\}>\s*<span>/, 'The V2 set row
 assert.doesNotMatch(resultSet, /<span>Сторона<\/span><select/, 'The side selector cannot repeat its caption');
 assert.match(resultSet, /aria-label=\{fieldLabel\(field,draft\.load_mode,unit\)\}/);
 assert.match(setRow, /aria-label=\{`Вес, \$\{weightUnitLabel\(unit\)\}`\} inputMode="decimal" enterKeyHint="next" placeholder=\{weightHint\}/);
-// An empty weight shows a dash, or last time's weight in grey when there is one (#100).
-assert.match(setRow, /const weightHint=last\.weight!==''\?toDisplayWeight\(last\.weight,unit\):'—';/);
+// An empty weight shows a dash, or last time's weight in grey when there is one (#100),
+// in the unit kept for that workout (#123, tests/weight-unit-question.mjs).
+assert.match(setRow, /const weightHint=last\.weight!==''\?withUnitIfOther\(toDisplayWeight\(last\.weight,previousUnit\),previousUnit,unit\):'—';/);
 assert.match(setRow, /aria-label="Повторы" data-reps-set-id=\{set\.id\}/);
 assert.match(setRow, /aria-label="Удалить подход"/);
 

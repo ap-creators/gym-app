@@ -145,7 +145,16 @@ export async function reorderPerformedSets(_, orderedSetIds) {
 export async function deletePerformedSet() { await pause(); }
 export async function deleteSessionExercise() { await pause(); }
 export async function updateExerciseNote() { await pause(); }
-export async function getExerciseHistorySummary() { await pause(); return { best: null, previous: null }; }
+// With `previous=1` «История» shows the workout the grey values come from, done a week ago (#123).
+export async function getExerciseHistorySummary(exerciseKey) {
+  await pause();
+  if (!withPrevious) return { best: null, previous: null };
+  const sets = previousSetsOf(Number(String(exerciseKey).replace('catalog-', '')));
+  const date = new Date(Date.now() - 7 * 86400000).toISOString();
+  const score = (set) => Number(set.weight) * (1 + Number(set.reps) / 30);
+  const top = sets.filter((set) => !set.resultV2 && set.setType === 'working').sort((a, b) => score(b) - score(a))[0];
+  return { best: top ? { set: top, date } : null, previous: { date, sets } };
+}
 // Last time: a warm-up and three working sets of every exercise, so the 4th working set and later get no hint.
 function previousSetsOf(index) {
   const v2 = resultsV2 && index === 1;
