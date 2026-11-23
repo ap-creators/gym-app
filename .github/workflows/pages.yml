@@ -12,8 +12,12 @@ permissions:
   pages: write
   id-token: write
 
+# Runs that deploy (push to main, manual) share the group `pages`: the newest one wins.
+# A pull request run only builds and tests, so it gets a group of its own. In one group with the
+# deploys it cancelled the deploy of a merge made soon after the pull request was opened, and
+# deployed nothing itself (#126).
 concurrency:
-  group: pages
+  group: ${{ github.event_name == 'pull_request' && format('pages-pr-{0}', github.event.pull_request.number) || 'pages' }}
   cancel-in-progress: true
 
 jobs:
