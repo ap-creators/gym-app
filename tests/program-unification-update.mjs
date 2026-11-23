@@ -85,6 +85,11 @@ assert.match(tabs,/background-size: 40px 40px/);
 assert.match(design,/background-size:40px 40px!important/);
 assert.match(workflow,/VITE_APP_BUILD_ID:/);
 assert.match(workflow,/dist\/version\.json/);
+// A pull request run deploys nothing, so it must not share a concurrency group with the runs that do:
+// it cancelled the deploy of a merge made right after the pull request was opened (#126).
+assert.match(workflow,/group: \$\{\{ github\.event_name == 'pull_request' && format\('pages-pr-\{0\}', github\.event\.pull_request\.number\) \|\| 'pages' \}\}/);
+assert.doesNotMatch(workflow,/^\s*group: pages\s*$/m,'pull request runs and deploys in one group');
+assert.match(workflow,/deploy:\r?\n\s+if: github\.event_name != 'pull_request'/,'only push and manual runs deploy');
 assert.match(update,/version\.json\?t=/);
 assert.match(update,/document\.visibilityState/);
 assert.match(update,/aria-label="Доступна новая версия GYM APP\. Обновить"/);
