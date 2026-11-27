@@ -494,3 +494,10 @@ Five equal-sized buttons, from left to right: **Главная → Тренир�
 - Now the muscle groups are a comma list, and a thin vertical line (1px, `--muted` at 50 % over the surface, 7px on each side) stands between the muscles and the equipment: «Трицепс, Грудные, Передняя дельта | Свой вес». A second implement from the default variation follows the first after a comma: «Свой вес, Штанга». An own exercise without equipment shows only its groups, with no line.
 - The separators are still drawn by CSS in `src/exercise-library-picker.css` from the tag classes (`is-secondary`, `is-equipment`, `is-equipment-extra`); the component writes no separator characters, so the two-line clamp and the aria-label are unchanged.
 - Check: `tests/exercise-tag-separators.mjs` (`test:ui-audit`).
+
+## «Подключение программы»: the start date field fits its card — November 2026 (#138)
+- On an iPhone the «Дата начала» field in «Дата первой тренировки» was wider than its card: it started level with «Первая тренировка» and ended about 8px past the card's right edge.
+- Cause: iOS draws `input[type="date"]` as its own pill and sizes it as a content box, so `width: 100%` plus the 12px side padding is wider than the card. Desktop browsers and Android keep the border box, so the stand looked right.
+- Rule for a date field inside a card: drop the native appearance (`-webkit-appearance: none; appearance: none`), keep `box-sizing: border-box`, `width: 100%`, `min-width: 0`, `max-width: 100%`, and give the grid around it a `minmax(0,1fr)` column. The field keeps its own look from the tokens: 48px high, `--surface-2`, `--line` border, `--radius-md`. `display: flex` with `align-items: center` keeps the date vertically centred, and `::-webkit-date-and-time-value` is left-aligned with no margin, so the date starts where the «Первая тренировка» text starts (iOS centres it by default).
+- The rules live in `src/join-ready-program.css`. Step 3 of the program constructor has had the same fix since August (`src/create-program-schedule-scroll-fix.css`).
+- Check: `tests/join-date-field-fit.mjs` (`test:ui-audit`). The overflow itself shows only on an iPhone.

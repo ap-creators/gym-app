@@ -166,15 +166,27 @@
 }
 .ready-program-join-phone .ready-program-date-card {
   display: grid;
+  grid-template-columns: minmax(0,1fr);
   gap: var(--space-3);
 }
 .ready-program-join-phone .ready-program-date-label {
   display: grid;
+  grid-template-columns: minmax(0,1fr);
   gap: var(--space-2);
+  min-width: 0;
 }
-.ready-program-join-phone .ready-program-date-label input {
+/* #138: iOS draws a native date control as its own pill and sizes it as a content box,
+   so `width: 100%` plus the side padding stuck out of the card. Without the native
+   appearance the field obeys the box model and lines up with «Первая тренировка». */
+.ready-program-join-phone .ready-program-date-label input[type='date'] {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 48px;
+  margin: 0;
   padding: 0 var(--space-3);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
@@ -182,7 +194,14 @@
   color: var(--ink);
   font: inherit;
   font-size: var(--text-body);
-  box-sizing: border-box;
+  overflow: hidden;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.ready-program-join-phone .ready-program-date-label input[type='date']::-webkit-date-and-time-value {
+  min-width: 0;
+  margin: 0;
+  text-align: left;
 }
 .ready-program-join-phone .ready-program-date-preview {
   display: grid;
