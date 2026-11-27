@@ -3,7 +3,7 @@
   "source_spreadsheet_id": "1aMd6bFvJadY76V0Ymt9JR9EnMkodT4WRQdva47mQVxg",
   "source_sheet": "Упражнения (Грудь) список",
   "source_sheet_gid": 598353244,
-  "imported_count": 63,
+  "imported_count": 65,
   "equipment_source_column": "I",
   "movement_source_column": "J",
   "description_source_columns": "K",
@@ -12,6 +12,7 @@
       "source_row": 2,
       "source_number": 1,
       "name": "Жим штанги лёжа на горизонтальной скамье",
+      "canonical_key": "rebuild_chest_1",
       "variation_axes": [
         {
           "label": "Хват",
@@ -92,6 +93,7 @@
       "source_row": 3,
       "source_number": 2,
       "name": "Жим гантелей лёжа на горизонтальной скамье",
+      "canonical_key": "rebuild_chest_2",
       "variation_axes": [
         {
           "label": "Хват",
@@ -153,6 +155,7 @@
       "source_row": 4,
       "source_number": 3,
       "name": "Жим лёжа в тренажёре Смита на горизонтальной скамье",
+      "canonical_key": "rebuild_chest_3",
       "variation_axes": [
         {
           "label": "Хват",
@@ -233,6 +236,7 @@
       "source_row": 5,
       "source_number": 4,
       "name": "Жим лёжа в рычажном тренажёре Hammer на горизонтальной скамье",
+      "canonical_key": "rebuild_chest_4",
       "variation_axes": [
         {
           "label": "Хват",
@@ -287,6 +291,7 @@
       "source_row": 6,
       "source_number": 5,
       "name": "Жим лёжа в кроссовере на горизонтальной скамье",
+      "canonical_key": "rebuild_chest_5",
       "variation_axes": [
         {
           "label": "Хват",
@@ -341,6 +346,7 @@
       "source_row": 7,
       "source_number": 6,
       "name": "Жим штанги лёжа (вариант Ларсена)",
+      "canonical_key": "rebuild_chest_6",
       "variation_axes": [
         {
           "label": "Ширина хвата",
@@ -383,6 +389,7 @@
       "source_row": 8,
       "source_number": 7,
       "name": "Жим гантелей лёжа (вариант Ларсена)",
+      "canonical_key": "rebuild_chest_7",
       "variation_axes": [
         {
           "label": "Хват",
@@ -425,6 +432,7 @@
       "source_row": 9,
       "source_number": 8,
       "name": "Жим лёжа в тренажёре Смита (вариант Ларсена)",
+      "canonical_key": "rebuild_chest_8",
       "variation_axes": [
         {
           "label": "Ширина хвата",
@@ -467,6 +475,7 @@
       "source_row": 10,
       "source_number": 9,
       "name": "Жим лёжа в рычажном тренажёре Hammer (вариант Ларсена)",
+      "canonical_key": "rebuild_chest_9",
       "variation_axes": [
         {
           "label": "Хват",
@@ -502,6 +511,7 @@
       "source_row": 11,
       "source_number": 10,
       "name": "Жим лёжа в кроссовере (вариант Ларсена)",
+      "canonical_key": "rebuild_chest_10",
       "variation_axes": [
         {
           "label": "Хват",
@@ -537,6 +547,7 @@
       "source_row": 12,
       "source_number": 11,
       "name": "Жим штанги лёжа на наклонной скамье",
+      "canonical_key": "rebuild_chest_11",
       "variation_axes": [
         {
           "label": "Угол скамьи",
@@ -605,6 +616,7 @@
       "source_row": 13,
       "source_number": 12,
       "name": "Жим гантелей лёжа на наклонной скамье",
+      "canonical_key": "rebuild_chest_12",
       "variation_axes": [
         {
           "label": "Угол скамьи",
@@ -666,6 +678,7 @@
       "source_row": 14,
       "source_number": 13,
       "name": "Жим лёжа в тренажёре Смита на наклонной скамье",
+      "canonical_key": "rebuild_chest_13",
       "variation_axes": [
         {
           "label": "Угол скамьи",
@@ -734,6 +747,7 @@
       "source_row": 15,
       "source_number": 14,
       "name": "Жим лёжа в рычажном тренажёре Hammer на наклонной скамье",
+      "canonical_key": "rebuild_chest_14",
       "variation_axes": [
         {
           "label": "Угол скамьи",
@@ -795,6 +809,7 @@
       "source_row": 16,
       "source_number": 15,
       "name": "Жим лёжа в кроссовере на наклонной скамье",
+      "canonical_key": "rebuild_chest_15",
       "variation_axes": [
         {
           "label": "Угол скамьи",
@@ -856,6 +871,7 @@
       "source_row": 17,
       "source_number": 16,
       "name": "Жим штанги лёжа на скамье с отрицательным наклоном",
+      "canonical_key": "rebuild_chest_16",
       "variation_axes": [
         {
           "label": "Ширина хвата",
@@ -898,6 +914,7 @@
       "source_row": 18,
       "source_number": 17,
       "name": "Жим гантелей лёжа на скамье с отрицательным наклоном",
+      "canonical_key": "rebuild_chest_17",
       "variation_axes": [
         {
           "label": "Хват",
@@ -933,6 +950,7 @@
       "source_row": 19,
       "source_number": 18,
       "name": "Жим лёжа в тренажёре Смита на скамье с отрицательным наклоном",
+      "canonical_key": "rebuild_chest_18",
       "variation_axes": [
         {
           "label": "Ширина хвата",
@@ -975,6 +993,7 @@
       "source_row": 20,
       "source_number": 19,
       "name": "Жим лёжа в рычажном тренажёре Hammer на скамье с отрицательным наклоном",
+      "canonical_key": "rebuild_chest_19",
       "variation_axes": [
         {
           "label": "Хват",
@@ -1010,6 +1029,7 @@
       "source_row": 21,
       "source_number": 20,
       "name": "Жим лёжа в кроссовере на скамье с отрицательным наклоном",
+      "canonical_key": "rebuild_chest_20",
       "variation_axes": [
         {
           "label": "Хват",
@@ -1045,6 +1065,7 @@
       "source_row": 22,
       "source_number": 21,
       "name": "Жим гантелей сидя на скамье 80°",
+      "canonical_key": "rebuild_chest_21",
       "variation_axes": [
         {
           "label": "Хват",
@@ -1080,6 +1101,7 @@
       "source_row": 23,
       "source_number": 22,
       "name": "Жим штанги сидя на скамье 80°",
+      "canonical_key": "rebuild_chest_22",
       "variation_axes": [],
       "equipment": "Штанга",
       "muscle_tags": [
@@ -1095,6 +1117,7 @@
       "source_row": 24,
       "source_number": 23,
       "name": "Жим сидя в тренажёре Смита на скамье 80°",
+      "canonical_key": "rebuild_chest_23",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -1110,6 +1133,7 @@
       "source_row": 25,
       "source_number": 24,
       "name": "Жим сидя в тренажёре Hammer вперёд",
+      "canonical_key": "rebuild_chest_24",
       "variation_axes": [
         {
           "label": "Работа руками",
@@ -1164,6 +1188,7 @@
       "source_row": 26,
       "source_number": 25,
       "name": "Жим сидя в тренажёре Hammer вверх",
+      "canonical_key": "rebuild_chest_25",
       "variation_axes": [
         {
           "label": "Работа руками",
@@ -1218,6 +1243,7 @@
       "source_row": 27,
       "source_number": 26,
       "name": "Жим сидя в кроссовере вперёд",
+      "canonical_key": "rebuild_chest_26",
       "variation_axes": [
         {
           "label": "Работа руками",
@@ -1272,6 +1298,7 @@
       "source_row": 28,
       "source_number": 27,
       "name": "Жим сидя в кроссовере вверх",
+      "canonical_key": "rebuild_chest_27",
       "variation_axes": [
         {
           "label": "Работа руками",
@@ -1326,6 +1353,7 @@
       "source_row": 29,
       "source_number": 28,
       "name": "Жим стоя в кроссовере вниз",
+      "canonical_key": "rebuild_chest_28",
       "variation_axes": [
         {
           "label": "Работа руками",
@@ -1361,6 +1389,7 @@
       "source_row": 30,
       "source_number": 29,
       "name": "Жим стоя в кроссовере вперёд",
+      "canonical_key": "rebuild_chest_29",
       "variation_axes": [
         {
           "label": "Работа руками",
@@ -1396,6 +1425,7 @@
       "source_row": 31,
       "source_number": 30,
       "name": "Разведения гантелей лёжа на горизонтальной скамье",
+      "canonical_key": "rebuild_chest_30",
       "variation_axes": [
         {
           "label": "Положение рук",
@@ -1429,6 +1459,7 @@
       "source_row": 32,
       "source_number": 31,
       "name": "Сведения рук лёжа в кроссовере на горизонтальной скамье",
+      "canonical_key": "rebuild_chest_31",
       "variation_axes": [
         {
           "label": "Положение рук",
@@ -1462,6 +1493,7 @@
       "source_row": 33,
       "source_number": 32,
       "name": "Разведения гантелей лёжа на наклонной скамье",
+      "canonical_key": "rebuild_chest_32",
       "variation_axes": [
         {
           "label": "Угол скамьи",
@@ -1515,6 +1547,7 @@
       "source_row": 34,
       "source_number": 33,
       "name": "Сведения рук лёжа в кроссовере на наклонной скамье",
+      "canonical_key": "rebuild_chest_33",
       "variation_axes": [
         {
           "label": "Угол скамьи",
@@ -1568,6 +1601,7 @@
       "source_row": 35,
       "source_number": 34,
       "name": "Разведения гантелей лёжа на скамье с отрицательным наклоном",
+      "canonical_key": "rebuild_chest_34",
       "variation_axes": [
         {
           "label": "Положение рук",
@@ -1601,6 +1635,7 @@
       "source_row": 36,
       "source_number": 35,
       "name": "Сведения рук лёжа в кроссовере на скамье с отрицательным наклоном",
+      "canonical_key": "rebuild_chest_35",
       "variation_axes": [
         {
           "label": "Положение рук",
@@ -1634,6 +1669,7 @@
       "source_row": 37,
       "source_number": 36,
       "name": "Сведения рук сидя в кроссовере",
+      "canonical_key": "rebuild_chest_36",
       "variation_axes": [
         {
           "label": "Положение рук",
@@ -1686,6 +1722,7 @@
       "source_row": 38,
       "source_number": 37,
       "name": "Сведения рук сидя в тренажёре «Бабочка» с рукоятями",
+      "canonical_key": "rebuild_chest_37",
       "variation_axes": [
         {
           "label": "Положение рук",
@@ -1738,6 +1775,7 @@
       "source_row": 39,
       "source_number": 38,
       "name": "Сведения рук сидя в тренажёре «Бабочка» с валиками",
+      "canonical_key": "rebuild_chest_38",
       "variation_axes": [
         {
           "label": "Положение рук",
@@ -1790,6 +1828,7 @@
       "source_row": 40,
       "source_number": 39,
       "name": "Сведения рук в кроссовере сверху вниз",
+      "canonical_key": "rebuild_chest_39",
       "variation_axes": [
         {
           "label": "Положение тела",
@@ -1823,6 +1862,7 @@
       "source_row": 41,
       "source_number": 40,
       "name": "Сведения рук стоя в кроссовере на уровне груди",
+      "canonical_key": "rebuild_chest_40",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -1836,6 +1876,7 @@
       "source_row": 42,
       "source_number": 41,
       "name": "Сведения рук стоя в кроссовере снизу вверх",
+      "canonical_key": "rebuild_chest_41",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -1850,6 +1891,7 @@
       "source_row": 43,
       "source_number": 42,
       "name": "Подъём гантелей стоя перед собой (снизу вверх)",
+      "canonical_key": "rebuild_chest_42",
       "variation_axes": [],
       "equipment": "Гантели",
       "muscle_tags": [
@@ -1863,6 +1905,7 @@
       "source_row": 44,
       "source_number": 43,
       "name": "Отжимания от пола на прямых ногах",
+      "canonical_key": "rebuild_chest_43",
       "variation_axes": [
         {
           "label": "Постановка рук",
@@ -1933,6 +1976,7 @@
       "source_row": 45,
       "source_number": 44,
       "name": "Отжимания от пола с колен",
+      "canonical_key": "rebuild_chest_44",
       "variation_axes": [
         {
           "label": "Постановка рук",
@@ -1973,8 +2017,9 @@
     },
     {
       "source_row": 46,
-      "source_number": 49,
+      "source_number": 45,
       "name": "Отжимания от стены",
+      "canonical_key": "rebuild_chest_49",
       "variation_axes": [
         {
           "label": "Постановка рук",
@@ -2008,8 +2053,9 @@
     },
     {
       "source_row": 47,
-      "source_number": 50,
+      "source_number": 46,
       "name": "Отжимания от грифа в раме / Смите",
+      "canonical_key": "rebuild_chest_50",
       "variation_axes": [
         {
           "label": "Постановка рук",
@@ -2043,8 +2089,9 @@
     },
     {
       "source_row": 48,
-      "source_number": 51,
+      "source_number": 47,
       "name": "Отжимания с руками на возвышении (скамья / платформа)",
+      "canonical_key": "rebuild_chest_51",
       "variation_axes": [
         {
           "label": "Постановка рук",
@@ -2078,8 +2125,9 @@
     },
     {
       "source_row": 49,
-      "source_number": 52,
+      "source_number": 48,
       "name": "Отжимания от пола с ногами на возвышении",
+      "canonical_key": "rebuild_chest_52",
       "variation_axes": [
         {
           "label": "Постановка рук",
@@ -2113,8 +2161,9 @@
     },
     {
       "source_row": 50,
-      "source_number": 53,
+      "source_number": 49,
       "name": "Отжимания на упорах / паралетсах",
+      "canonical_key": "rebuild_chest_53",
       "variation_axes": [
         {
           "label": "Амплитуда",
@@ -2148,8 +2197,9 @@
     },
     {
       "source_row": 51,
-      "source_number": 54,
+      "source_number": 50,
       "name": "Отжимания на кольцах / подвесных петлях",
+      "canonical_key": "rebuild_chest_54",
       "variation_axes": [
         {
           "label": "Вариант",
@@ -2183,8 +2233,9 @@
     },
     {
       "source_row": 52,
-      "source_number": 55,
+      "source_number": 51,
       "name": "Отжимания «Лучник»",
+      "canonical_key": "rebuild_chest_55",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2198,8 +2249,9 @@
     },
     {
       "source_row": 53,
-      "source_number": 56,
+      "source_number": 52,
       "name": "Отжимания на одной руке",
+      "canonical_key": "rebuild_chest_56",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2213,8 +2265,9 @@
     },
     {
       "source_row": 54,
-      "source_number": 57,
+      "source_number": 53,
       "name": "Отжимания с хлопком",
+      "canonical_key": "rebuild_chest_57",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2228,8 +2281,9 @@
     },
     {
       "source_row": 55,
-      "source_number": 58,
+      "source_number": 54,
       "name": "Отжимания на пальцах",
+      "canonical_key": "rebuild_chest_58",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2243,8 +2297,9 @@
     },
     {
       "source_row": 56,
-      "source_number": 59,
+      "source_number": 55,
       "name": "Алмазные отжимания",
+      "canonical_key": "rebuild_chest_59",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2258,8 +2313,9 @@
     },
     {
       "source_row": 57,
-      "source_number": 60,
+      "source_number": 56,
       "name": "Корейские отжимания",
+      "canonical_key": "rebuild_chest_60",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2273,8 +2329,9 @@
     },
     {
       "source_row": 58,
-      "source_number": 61,
+      "source_number": 57,
       "name": "Обратные отжимания",
+      "canonical_key": "rebuild_chest_61",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2288,8 +2345,9 @@
     },
     {
       "source_row": 59,
-      "source_number": 62,
+      "source_number": 58,
       "name": "Отжимания на кулаках",
+      "canonical_key": "rebuild_chest_62",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2303,8 +2361,9 @@
     },
     {
       "source_row": 60,
-      "source_number": 63,
+      "source_number": 59,
       "name": "Отжимания с переходом в боковую планку",
+      "canonical_key": "rebuild_chest_63",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2318,8 +2377,9 @@
     },
     {
       "source_row": 61,
-      "source_number": 64,
+      "source_number": 60,
       "name": "Отжимания на параллельных брусьях",
+      "canonical_key": "rebuild_chest_64",
       "variation_axes": [
         {
           "label": "Положение корпуса",
@@ -2374,8 +2434,9 @@
     },
     {
       "source_row": 62,
-      "source_number": 65,
+      "source_number": 61,
       "name": "Отжимания на брусьях в гравитроне",
+      "canonical_key": "rebuild_chest_65",
       "variation_axes": [
         {
           "label": "Положение корпуса",
@@ -2409,8 +2470,9 @@
     },
     {
       "source_row": 63,
-      "source_number": 66,
+      "source_number": 62,
       "name": "Отжимания на прямой перекладине",
+      "canonical_key": "rebuild_chest_66",
       "variation_axes": [],
       "equipment": "Турник",
       "muscle_tags": [
@@ -2424,8 +2486,9 @@
     },
     {
       "source_row": 64,
-      "source_number": 67,
+      "source_number": 63,
       "name": "Отжимания на гимнастических кольцах",
+      "canonical_key": "rebuild_chest_67",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -2435,6 +2498,38 @@
       ],
       "equipment_tag": "Гимнастические кольца",
       "description": "1. Установите гимнастические кольца на одинаковую высоту и поднимитесь в устойчивый упор на вытянутых руках.\n2. Опустите лопатки и стабилизируйте плечи; удерживайте кольца близко к корпусу без сильного разворота кистей.\n3. Согните локти, плавно опускаясь между кольцами лишь настолько глубоко, насколько сохраняется стабильность плеч.\n4. Разогните локти, вернитесь в верхний упор без раскачивания колец и проверьте равновесие перед следующим повтором.",
+      "movement_filter_type": "Жим"
+    },
+    {
+      "source_row": 65,
+      "source_number": 64,
+      "name": "Армейские отжимания",
+      "canonical_key": "rebuild_chest_68",
+      "variation_axes": [],
+      "equipment": "Свой вес",
+      "muscle_tags": [
+        "Грудные",
+        "Трицепс",
+        "Передняя дельта"
+      ],
+      "equipment_tag": "Свой вес",
+      "description": "1. Примите упор лёжа: ладони разместите примерно под плечами, ноги вытяните, корпус удерживайте прямым от головы до пят.\n2. Напрягите пресс и ягодицы, опустите плечи от ушей и направьте локти назад, ближе к бокам корпуса.\n3. Согните локти, медленно опуская грудь к полу; не разводите локти строго в стороны и не провисайте в пояснице.\n4. Разогните локти, выжимая корпус вверх без рывка, и сохраните прямую линию тела до завершения повтора.",
+      "movement_filter_type": "Жим"
+    },
+    {
+      "source_row": 66,
+      "source_number": 65,
+      "name": "Отжимания в стойке на руках",
+      "canonical_key": "rebuild_chest_69",
+      "variation_axes": [],
+      "equipment": "Свой вес",
+      "muscle_tags": [
+        "Передняя дельта",
+        "Трицепс",
+        "Средняя дельта"
+      ],
+      "equipment_tag": "Свой вес",
+      "description": "1. Встаньте в устойчивую стойку на руках у стены или в свободной стойке только при достаточном навыке; поставьте ладони немного шире плеч.\n2. Напрягите корпус, удерживайте таз над плечами, а кисти и локти выровняйте по линии нагрузки; не допускайте чрезмерного прогиба поясницы.\n3. Медленно согните локти, опуская голову к мягкой безопасной опоре в доступной амплитуде; не переносите вес на шею.\n4. Разогните локти и вернитесь в устойчивую стойку, после чего контролируемо опустите ноги на пол.",
       "movement_filter_type": "Жим"
     }
   ],
