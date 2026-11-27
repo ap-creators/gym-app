@@ -12,6 +12,7 @@
       "source_row": 2,
       "source_number": 1,
       "name": "Приседания со штангой на плечах",
+      "canonical_key": "rebuild_legs_2",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -66,6 +67,7 @@
       "source_row": 3,
       "source_number": 2,
       "name": "Приседания со штангой на груди",
+      "canonical_key": "rebuild_legs_3",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -101,6 +103,7 @@
       "source_row": 4,
       "source_number": 3,
       "name": "Приседания со штангой за спиной",
+      "canonical_key": "rebuild_legs_4",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -135,6 +138,7 @@
       "source_row": 5,
       "source_number": 4,
       "name": "Приседания с гирей",
+      "canonical_key": "rebuild_legs_5",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -170,6 +174,7 @@
       "source_row": 6,
       "source_number": 5,
       "name": "Приседания без отягощения",
+      "canonical_key": "rebuild_legs_6",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -204,6 +209,7 @@
       "source_row": 7,
       "source_number": 6,
       "name": "Приседания в тренажёре Смита",
+      "canonical_key": "rebuild_legs_7",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -258,6 +264,7 @@
       "source_row": 8,
       "source_number": 7,
       "name": "Гакк-приседания в вертикальном тренажёре (классические)",
+      "canonical_key": "rebuild_legs_8",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -293,6 +300,7 @@
       "source_row": 9,
       "source_number": 8,
       "name": "Гакк-приседания в вертикальном тренажёре (обратные)",
+      "canonical_key": "rebuild_legs_9",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -328,6 +336,7 @@
       "source_row": 10,
       "source_number": 9,
       "name": "Гакк-приседания в наклонном тренажёре (классические)",
+      "canonical_key": "rebuild_legs_10",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -363,6 +372,7 @@
       "source_row": 11,
       "source_number": 10,
       "name": "Гакк-приседания в наклонном тренажёре (обратные)",
+      "canonical_key": "rebuild_legs_11",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -398,6 +408,7 @@
       "source_row": 12,
       "source_number": 11,
       "name": "Приседания с поясным отягощением",
+      "canonical_key": "rebuild_legs_12",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -433,6 +444,7 @@
       "source_row": 13,
       "source_number": 12,
       "name": "Приседания на BOSU",
+      "canonical_key": "rebuild_legs_13",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -489,6 +501,7 @@
       "source_row": 14,
       "source_number": 13,
       "name": "Сисси-приседания",
+      "canonical_key": "rebuild_legs_14",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -502,6 +515,7 @@
       "source_row": 15,
       "source_number": 14,
       "name": "Сисси-приседания в тренажёре",
+      "canonical_key": "rebuild_legs_15",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -515,6 +529,7 @@
       "source_row": 16,
       "source_number": 15,
       "name": "Приседания плие на полу",
+      "canonical_key": "rebuild_legs_16",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -552,6 +567,7 @@
       "source_row": 17,
       "source_number": 16,
       "name": "Приседания плие на возвышениях",
+      "canonical_key": "rebuild_legs_17",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -597,6 +613,7 @@
       "source_row": 18,
       "source_number": 17,
       "name": "Приседания на одной ноге на полу",
+      "canonical_key": "rebuild_legs_18",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -634,6 +651,7 @@
       "source_row": 19,
       "source_number": 18,
       "name": "Приседания на одной ноге с опорой на возвышение",
+      "canonical_key": "rebuild_legs_19",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -671,6 +689,7 @@
       "source_row": 20,
       "source_number": 19,
       "name": "Приседания на одной ноге из положения сидя",
+      "canonical_key": "rebuild_legs_20",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -715,6 +734,7 @@
       "source_row": 21,
       "source_number": 20,
       "name": "Выпады назад",
+      "canonical_key": "rebuild_legs_21",
       "variation_axes": [
         {
           "label": "Поверхность",
@@ -780,6 +800,7 @@
       "source_row": 22,
       "source_number": 21,
       "name": "Выпады назад в тренажёре Смита",
+      "canonical_key": "rebuild_legs_22",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -794,6 +815,7 @@
       "source_row": 23,
       "source_number": 22,
       "name": "Выпады вперёд",
+      "canonical_key": "rebuild_legs_23",
       "variation_axes": [
         {
           "label": "Поверхность",
@@ -859,6 +881,7 @@
       "source_row": 24,
       "source_number": 23,
       "name": "Выпады вперёд в тренажёре Смита",
+      "canonical_key": "rebuild_legs_24",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -873,6 +896,7 @@
       "source_row": 25,
       "source_number": 24,
       "name": "Выпады вперёд в гакк-тренажёре (классические)",
+      "canonical_key": "rebuild_legs_25",
       "variation_axes": [],
       "equipment": "Гакк",
       "muscle_tags": [
@@ -887,6 +911,7 @@
       "source_row": 26,
       "source_number": 25,
       "name": "Выпады вперёд в гакк-тренажёре (обратные)",
+      "canonical_key": "rebuild_legs_26",
       "variation_axes": [
         {
           "label": "Опора второй ноги",
@@ -921,6 +946,7 @@
       "source_row": 27,
       "source_number": 26,
       "name": "Выпады на месте",
+      "canonical_key": "rebuild_legs_27",
       "variation_axes": [
         {
           "label": "Поверхность",
@@ -985,6 +1011,7 @@
       "source_row": 28,
       "source_number": 27,
       "name": "Выпады на месте в тренажёре Смита",
+      "canonical_key": "rebuild_legs_28",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -999,6 +1026,7 @@
       "source_row": 29,
       "source_number": 28,
       "name": "Выпады на месте в гакк-тренажёре (классические)",
+      "canonical_key": "rebuild_legs_29",
       "variation_axes": [],
       "equipment": "Гакк",
       "muscle_tags": [
@@ -1013,6 +1041,7 @@
       "source_row": 30,
       "source_number": 29,
       "name": "Выпады на месте в гакк-тренажёре (обратные)",
+      "canonical_key": "rebuild_legs_30",
       "variation_axes": [
         {
           "label": "Опора второй ноги",
@@ -1047,6 +1076,7 @@
       "source_row": 31,
       "source_number": 30,
       "name": "Болгарские выпады",
+      "canonical_key": "rebuild_legs_31",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -1092,6 +1122,7 @@
       "source_row": 32,
       "source_number": 31,
       "name": "Болгарские выпады в тренажёре Смита",
+      "canonical_key": "rebuild_legs_32",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -1106,6 +1137,7 @@
       "source_row": 33,
       "source_number": 32,
       "name": "Выпады в ходьбе",
+      "canonical_key": "rebuild_legs_33",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -1150,6 +1182,7 @@
       "source_row": 34,
       "source_number": 33,
       "name": "Выпады в ходьбе «Цапля»",
+      "canonical_key": "rebuild_legs_34",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -1195,6 +1228,7 @@
       "source_row": 35,
       "source_number": 34,
       "name": "Диагональные выпады",
+      "canonical_key": "rebuild_legs_35",
       "variation_axes": [
         {
           "label": "Поверхность",
@@ -1260,6 +1294,7 @@
       "source_row": 36,
       "source_number": 35,
       "name": "Диагональные выпады в тренажёре Смита",
+      "canonical_key": "rebuild_legs_36",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -1275,6 +1310,7 @@
       "source_row": 37,
       "source_number": 36,
       "name": "Боковые выпады",
+      "canonical_key": "rebuild_legs_37",
       "variation_axes": [
         {
           "label": "Поверхность",
@@ -1340,6 +1376,7 @@
       "source_row": 38,
       "source_number": 37,
       "name": "Боковые выпады в тренажёре Смита",
+      "canonical_key": "rebuild_legs_38",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -1355,6 +1392,7 @@
       "source_row": 39,
       "source_number": 38,
       "name": "Перекрёстные выпады",
+      "canonical_key": "rebuild_legs_39",
       "variation_axes": [
         {
           "label": "Поверхность",
@@ -1420,6 +1458,7 @@
       "source_row": 40,
       "source_number": 39,
       "name": "Перекрёстные выпады в тренажёре Смита",
+      "canonical_key": "rebuild_legs_40",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -1435,6 +1474,7 @@
       "source_row": 41,
       "source_number": 40,
       "name": "Жим ногами в наклонном тренажёре (в две ноги)",
+      "canonical_key": "rebuild_legs_41",
       "variation_axes": [
         {
           "label": "Постановка стоп",
@@ -1522,6 +1562,7 @@
       "source_row": 42,
       "source_number": 41,
       "name": "Жим ногами в наклонном тренажёре (в одну ногу)",
+      "canonical_key": "rebuild_legs_42",
       "variation_axes": [
         {
           "label": "Постановка стоп",
@@ -1602,6 +1643,7 @@
       "source_row": 43,
       "source_number": 42,
       "name": "Жим ногами в горизонтальном тренажёре (в две ноги)",
+      "canonical_key": "rebuild_legs_43",
       "variation_axes": [
         {
           "label": "Постановка стоп",
@@ -1689,6 +1731,7 @@
       "source_row": 44,
       "source_number": 43,
       "name": "Жим ногами в горизонтальном тренажёре (в одну ногу)",
+      "canonical_key": "rebuild_legs_44",
       "variation_axes": [
         {
           "label": "Постановка стоп",
@@ -1769,6 +1812,7 @@
       "source_row": 45,
       "source_number": 44,
       "name": "Зашагивания на платформу",
+      "canonical_key": "rebuild_legs_45",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -1813,6 +1857,7 @@
       "source_row": 46,
       "source_number": 45,
       "name": "Разгибания ног в тренажёре",
+      "canonical_key": "rebuild_legs_46",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -1872,6 +1917,7 @@
       "source_row": 47,
       "source_number": 46,
       "name": "Сгибания ноги стоя в тренажёре",
+      "canonical_key": "rebuild_legs_47",
       "variation_axes": [
         {
           "label": "Положение стоп",
@@ -1913,6 +1959,7 @@
       "source_row": 48,
       "source_number": 47,
       "name": "Сгибания ног сидя в тренажёре",
+      "canonical_key": "rebuild_legs_48",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -1980,6 +2027,7 @@
       "source_row": 49,
       "source_number": 48,
       "name": "Сгибания ног лёжа в тренажёре",
+      "canonical_key": "rebuild_legs_49",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -2059,6 +2107,7 @@
       "source_row": 50,
       "source_number": 49,
       "name": "Сгибания ног лёжа с гантелью",
+      "canonical_key": "rebuild_legs_50",
       "variation_axes": [
         {
           "label": "Тип скамьи",
@@ -2093,6 +2142,7 @@
       "source_row": 51,
       "source_number": 50,
       "name": "Сгибания ног «Весёлый Роджер»",
+      "canonical_key": "rebuild_legs_51",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -2107,6 +2157,7 @@
       "source_row": 52,
       "source_number": 51,
       "name": "Рывок штанги на грудь",
+      "canonical_key": "rebuild_legs_52",
       "variation_axes": [],
       "equipment": "Штанга",
       "muscle_tags": [
@@ -2122,6 +2173,7 @@
       "source_row": 53,
       "source_number": 52,
       "name": "Становая тяга классическая (прямой гриф)",
+      "canonical_key": "rebuild_legs_53",
       "variation_axes": [
         {
           "label": "Хват",
@@ -2194,6 +2246,7 @@
       "source_row": 54,
       "source_number": 53,
       "name": "Становая тяга классическая в тренажёре Смита",
+      "canonical_key": "rebuild_legs_54",
       "variation_axes": [
         {
           "label": "Хват",
@@ -2229,6 +2282,7 @@
       "source_row": 55,
       "source_number": 54,
       "name": "Становая тяга классическая в рычажном тренажёре",
+      "canonical_key": "rebuild_legs_55",
       "variation_axes": [
         {
           "label": "Хват",
@@ -2271,6 +2325,7 @@
       "source_row": 56,
       "source_number": 55,
       "name": "Становая тяга сумо со штангой",
+      "canonical_key": "rebuild_legs_56",
       "variation_axes": [
         {
           "label": "Хват",
@@ -2306,6 +2361,7 @@
       "source_row": 57,
       "source_number": 56,
       "name": "Становая тяга сумо с гирей",
+      "canonical_key": "rebuild_legs_57",
       "variation_axes": [
         {
           "label": "Опора",
@@ -2341,6 +2397,7 @@
       "source_row": 58,
       "source_number": 57,
       "name": "Становая тяга сумо в тренажёре Смита",
+      "canonical_key": "rebuild_legs_58",
       "variation_axes": [
         {
           "label": "Хват",
@@ -2376,6 +2433,7 @@
       "source_row": 59,
       "source_number": 58,
       "name": "Румынская тяга со штангой",
+      "canonical_key": "rebuild_legs_59",
       "variation_axes": [
         {
           "label": "Пятки",
@@ -2429,6 +2487,7 @@
       "source_row": 60,
       "source_number": 59,
       "name": "Румынская тяга с гантелями",
+      "canonical_key": "rebuild_legs_60",
       "variation_axes": [
         {
           "label": "Пятки",
@@ -2482,6 +2541,7 @@
       "source_row": 61,
       "source_number": 60,
       "name": "Румынская тяга с гирей",
+      "canonical_key": "rebuild_legs_61",
       "variation_axes": [
         {
           "label": "Пятки",
@@ -2535,6 +2595,7 @@
       "source_row": 62,
       "source_number": 61,
       "name": "Румынская тяга с резинкой",
+      "canonical_key": "rebuild_legs_62",
       "variation_axes": [
         {
           "label": "Пятки",
@@ -2569,6 +2630,7 @@
       "source_row": 63,
       "source_number": 62,
       "name": "Румынская тяга на BOSU",
+      "canonical_key": "rebuild_legs_63",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -2613,6 +2675,7 @@
       "source_row": 64,
       "source_number": 63,
       "name": "Румынская тяга в тренажёре Смита",
+      "canonical_key": "rebuild_legs_64",
       "variation_axes": [
         {
           "label": "Пятки",
@@ -2666,6 +2729,7 @@
       "source_row": 65,
       "source_number": 64,
       "name": "Румынская тяга в рычажном тренажёре",
+      "canonical_key": "rebuild_legs_65",
       "variation_axes": [
         {
           "label": "Хват",
@@ -2707,6 +2771,7 @@
       "source_row": 66,
       "source_number": 65,
       "name": "Румынская тяга на одной ноге",
+      "canonical_key": "rebuild_legs_66",
       "variation_axes": [
         {
           "label": "Положение второй ноги",
@@ -2792,6 +2857,7 @@
       "source_row": 67,
       "source_number": 67,
       "name": "Румынская тяга на одной ноге в тренажёре Смита",
+      "canonical_key": "rebuild_legs_67",
       "variation_axes": [
         {
           "label": "Положение второй ноги",
@@ -2833,6 +2899,7 @@
       "source_row": 68,
       "source_number": 68,
       "name": "Румынская тяга на одной ноге в рычажном тренажёре",
+      "canonical_key": "rebuild_legs_68",
       "variation_axes": [
         {
           "label": "Положение второй ноги",
@@ -2874,6 +2941,7 @@
       "source_row": 69,
       "source_number": 69,
       "name": "Ягодичный мост на полу",
+      "canonical_key": "rebuild_legs_69",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -2956,6 +3024,7 @@
       "source_row": 70,
       "source_number": 70,
       "name": "Ягодичный мост с опорой",
+      "canonical_key": "rebuild_legs_70",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -3046,6 +3115,7 @@
       "source_row": 71,
       "source_number": 71,
       "name": "Ягодичный мост в тренажёре Смита с опорой",
+      "canonical_key": "rebuild_legs_71",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -3099,6 +3169,7 @@
       "source_row": 72,
       "source_number": 72,
       "name": "Ягодичный мост в тренажёре для ягодичного моста с опорой (ноги на ширине плеч)",
+      "canonical_key": "rebuild_legs_72",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -3152,6 +3223,7 @@
       "source_row": 73,
       "source_number": 73,
       "name": "Ягодичный мост на одной ноге на полу",
+      "canonical_key": "rebuild_legs_73",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -3196,6 +3268,7 @@
       "source_row": 74,
       "source_number": 74,
       "name": "Ягодичный мост на одной ноге с опорой",
+      "canonical_key": "rebuild_legs_74",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -3240,6 +3313,7 @@
       "source_row": 75,
       "source_number": 75,
       "name": "Ягодичный мост на одной ноге в тренажёре Смита",
+      "canonical_key": "rebuild_legs_75",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -3254,6 +3328,7 @@
       "source_row": 76,
       "source_number": 76,
       "name": "Ягодичный мост на одной ноге в тренажёре для ягодичного моста",
+      "canonical_key": "rebuild_legs_76",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -3268,6 +3343,7 @@
       "source_row": 77,
       "source_number": 77,
       "name": "Подъёмы на носки",
+      "canonical_key": "rebuild_legs_77",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -3357,6 +3433,7 @@
       "source_row": 78,
       "source_number": 78,
       "name": "Подъёмы на носки стоя в тренажёре",
+      "canonical_key": "rebuild_legs_78",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -3390,6 +3467,7 @@
       "source_row": 79,
       "source_number": 79,
       "name": "Подъёмы на носки стоя в наклоне в тренажёре",
+      "canonical_key": "rebuild_legs_79",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -3423,6 +3501,7 @@
       "source_row": 80,
       "source_number": 80,
       "name": "Подъёмы на носки сидя в тренажёре",
+      "canonical_key": "rebuild_legs_80",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -3456,6 +3535,7 @@
       "source_row": 81,
       "source_number": 81,
       "name": "Подъёмы на носки в гакк-тренажёре",
+      "canonical_key": "rebuild_legs_81",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -3489,6 +3569,7 @@
       "source_row": 82,
       "source_number": 82,
       "name": "Подъёмы на носки в тренажёре для жима ногами",
+      "canonical_key": "rebuild_legs_82",
       "variation_axes": [
         {
           "label": "Рабочие ноги",
@@ -3522,6 +3603,7 @@
       "source_row": 83,
       "source_number": 83,
       "name": "Наклоны вперёд (Good Morning)",
+      "canonical_key": "rebuild_legs_83",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -3558,6 +3640,7 @@
       "source_row": 84,
       "source_number": 85,
       "name": "Наклоны вперёд (Good Morning) в тренажёре Смита",
+      "canonical_key": "rebuild_legs_84",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
@@ -3572,6 +3655,7 @@
       "source_row": 85,
       "source_number": 86,
       "name": "Наклоны вперёд (Good Morning) в обратном гакк-тренажёре",
+      "canonical_key": "rebuild_legs_85",
       "variation_axes": [],
       "equipment": "Гакк",
       "muscle_tags": [
@@ -3586,6 +3670,7 @@
       "source_row": 86,
       "source_number": 87,
       "name": "Наклоны вперёд (Good Morning) на одной ноге",
+      "canonical_key": "rebuild_legs_86",
       "variation_axes": [
         {
           "label": "Положение второй ноги",
@@ -3648,6 +3733,7 @@
       "source_row": 87,
       "source_number": 88,
       "name": "Наклоны вперёд (Good Morning) на одной ноге в тренажёре Смита",
+      "canonical_key": "rebuild_legs_87",
       "variation_axes": [
         {
           "label": "Положение второй ноги",
@@ -3689,6 +3775,7 @@
       "source_row": 88,
       "source_number": 89,
       "name": "Наклоны вперёд (Good Morning) на одной ноге в обратном гакк-тренажёре",
+      "canonical_key": "rebuild_legs_88",
       "variation_axes": [
         {
           "label": "Положение второй ноги",
@@ -3730,6 +3817,7 @@
       "source_row": 89,
       "source_number": 90,
       "name": "Сведение ног сидя в тренажёре",
+      "canonical_key": "rebuild_legs_89",
       "variation_axes": [
         {
           "label": "Наклон корпуса",
@@ -3770,6 +3858,7 @@
       "source_row": 90,
       "source_number": 91,
       "name": "Разведение ног сидя в тренажёре",
+      "canonical_key": "rebuild_legs_90",
       "variation_axes": [
         {
           "label": "Наклон корпуса",
@@ -3810,6 +3899,7 @@
       "source_row": 91,
       "source_number": null,
       "name": "Отведение ноги назад стоя в тренажёре",
+      "canonical_key": "rebuild_legs_91",
       "variation_axes": [
         {
           "label": "Режим",
@@ -3844,6 +3934,7 @@
       "source_row": 92,
       "source_number": 93,
       "name": "Отведение ноги в сторону стоя в тренажёре",
+      "canonical_key": "rebuild_legs_92",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -3857,6 +3948,7 @@
       "source_row": 93,
       "source_number": 94,
       "name": "Отведение ноги в тренажёре Смита на полу или горизонтальной скамье",
+      "canonical_key": "rebuild_legs_93",
       "variation_axes": [
         {
           "label": "Направление носка",
@@ -3891,6 +3983,7 @@
       "source_row": 94,
       "source_number": 95,
       "name": "Отведение ноги в тренажёре Смита на наклонной скамье",
+      "canonical_key": "rebuild_legs_94",
       "variation_axes": [
         {
           "label": "Направление носка",
@@ -3925,6 +4018,7 @@
       "source_row": 95,
       "source_number": 96,
       "name": "Отведение ноги назад в кроссовере",
+      "canonical_key": "rebuild_legs_95",
       "variation_axes": [
         {
           "label": "Положение ноги",
@@ -3959,6 +4053,7 @@
       "source_row": 96,
       "source_number": 97,
       "name": "Отведение ноги по диагонали в кроссовере",
+      "canonical_key": "rebuild_legs_96",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -3972,6 +4067,7 @@
       "source_row": 97,
       "source_number": 98,
       "name": "Отведение ноги в сторону в кроссовере",
+      "canonical_key": "rebuild_legs_97",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -3985,6 +4081,7 @@
       "source_row": 98,
       "source_number": 99,
       "name": "Отведение ноги стоя со свободным отягощением",
+      "canonical_key": "rebuild_legs_98",
       "variation_axes": [
         {
           "label": "Направление",
@@ -4018,6 +4115,7 @@
       "source_row": 99,
       "source_number": 100,
       "name": "Отведение ноги в сторону на четвереньках со свободным отягощением",
+      "canonical_key": "rebuild_legs_99",
       "variation_axes": [
         {
           "label": "Направление",
@@ -4051,6 +4149,7 @@
       "source_row": 100,
       "source_number": 101,
       "name": "Обратный жим ногами в тренажёре Смита",
+      "canonical_key": "rebuild_legs_100",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -4105,6 +4204,7 @@
       "source_row": 101,
       "source_number": 102,
       "name": "Вертикальный жим ногами в тренажёре Смита («Свечка»)",
+      "canonical_key": "rebuild_legs_101",
       "variation_axes": [
         {
           "label": "Постановка ног",
@@ -4159,6 +4259,7 @@
       "source_row": 102,
       "source_number": 103,
       "name": "Махи гирей (свинг)",
+      "canonical_key": "rebuild_legs_102",
       "variation_axes": [
         {
           "label": "Количество рук",
@@ -4193,6 +4294,7 @@
       "source_row": 103,
       "source_number": 104,
       "name": "Гиперэкстензия в горизонтальном тренажёре",
+      "canonical_key": "rebuild_legs_103",
       "variation_axes": [
         {
           "label": "Положение колен",
@@ -4227,6 +4329,7 @@
       "source_row": 104,
       "source_number": 105,
       "name": "Гиперэкстензия в наклонном тренажёре на двух ногах (стопы параллельно)",
+      "canonical_key": "rebuild_legs_104",
       "variation_axes": [
         {
           "label": "Положение колен",
@@ -4261,6 +4364,7 @@
       "source_row": 105,
       "source_number": 106,
       "name": "Гиперэкстензия в наклонном тренажёре на двух ногах (носки наружу)",
+      "canonical_key": "rebuild_legs_105",
       "variation_axes": [],
       "equipment": "Тренажёр",
       "muscle_tags": [
@@ -4275,6 +4379,7 @@
       "source_row": 106,
       "source_number": 107,
       "name": "Гиперэкстензия в наклонном тренажёре на одной ноге",
+      "canonical_key": "rebuild_legs_106",
       "variation_axes": [
         {
           "label": "Направление стоп",
@@ -4309,6 +4414,7 @@
       "source_row": 107,
       "source_number": 108,
       "name": "Обратная гиперэкстензия («Лягушка»)",
+      "canonical_key": "rebuild_legs_107",
       "variation_axes": [],
       "equipment": "Свой вес",
       "muscle_tags": [
@@ -4322,6 +4428,7 @@
       "source_row": 108,
       "source_number": 109,
       "name": "Power Runner",
+      "canonical_key": "rebuild_legs_108",
       "variation_axes": [
         {
           "label": "Вес",
@@ -4359,6 +4466,7 @@
       "source_row": 109,
       "source_number": 110,
       "name": "Статическое удержание «стульчик»",
+      "canonical_key": "rebuild_legs_109",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -4411,6 +4519,7 @@
       "source_row": 110,
       "source_number": 111,
       "name": "Статическое удержание в приседе плие",
+      "canonical_key": "rebuild_legs_110",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -4464,6 +4573,7 @@
       "source_row": 111,
       "source_number": 112,
       "name": "Выпрыгивания из приседа",
+      "canonical_key": "rebuild_legs_111",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -4509,6 +4619,7 @@
       "source_row": 112,
       "source_number": 113,
       "name": "Выпрыгивания с опорой на одну ногу",
+      "canonical_key": "rebuild_legs_112",
       "variation_axes": [
         {
           "label": "Отягощение",
@@ -4554,6 +4665,7 @@
       "source_row": 113,
       "source_number": 114,
       "name": "Подъём таза в тренажёре Смита на двух ногах",
+      "canonical_key": "rebuild_legs_113",
       "variation_axes": [
         {
           "label": "Направление стоп",
@@ -4588,6 +4700,7 @@
       "source_row": 114,
       "source_number": 115,
       "name": "Подъём таза в тренажёре Смита на одной ноге",
+      "canonical_key": "rebuild_legs_114",
       "variation_axes": [],
       "equipment": "Смит",
       "muscle_tags": [
