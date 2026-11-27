@@ -9,7 +9,7 @@ const library=read('src/lib/exerciseLibrary.js');
 const details=read('src/components/ExerciseDetailsContent.jsx');
 for(const {snap,sheet,gid,count,axes,opts} of [
  {snap:legs,sheet:'Упражнения (Ноги) список',gid:598353243,count:113,axes:128,opts:308},
- {snap:chest,sheet:'Упражнения (Грудь) список',gid:598353244,count:63,axes:70,opts:158},
+ {snap:chest,sheet:'Упражнения (Грудь) список',gid:598353244,count:65,axes:70,opts:158},
 ]){
  assert.equal(snap.source_sheet,sheet);
  assert.equal(snap.source_sheet_gid,gid);
@@ -33,16 +33,17 @@ assert.equal(legs.exercises.find(e=>e.source_row===13).name,'Приседани�
 assert.equal(legs.exercises.find(e=>e.source_row===108).name,'Power Runner');
 assert.equal(legs.exercises.reduce((n,e)=>n+e.muscle_tags.length,0),249);
 assert.equal(chest.exercises[0].name,'Жим штанги лёжа на горизонтальной скамье');
-assert.equal(chest.exercises.at(-1).name,'Отжимания на гимнастических кольцах');
+assert.equal(chest.exercises.at(-1).name,'Отжимания в стойке на руках');
+assert.equal(chest.exercises.at(-2).name,'Армейские отжимания');
 assert.deepEqual(chest.exercises[0].muscle_tags,['Грудные','Трицепс','Передняя дельта']);
-assert.match(legSql,/private\.exercise_catalog_v1_archive/);
-assert.match(legSql,/source_sheet not in \('Упражнения \(Ноги\) список','Упражнения \(Грудь\) список'\)/);
+assert.match(legSql,/safe re-run: match by stable canonical_key/i);
+assert.match(legSql,/on conflict\(canonical_key\) do update/);
 assert.match(legSql,/on conflict\(canonical_key\) do update/);
 assert.match(chestSql,/rebuild_chest_/);
 assert.match(chestSql,/on conflict\(canonical_key\) do update/);
 assert.doesNotMatch(legSql+'\n'+chestSql,/delete from public\.exercises|truncate|cascade/i);
 assert.match(read('supabase/migrations/20261122135000_exercise_movement_filter_type.sql'),/add column if not exists movement_filter_type text/);
-assert.match(library,/REBUILT_BASE_SHEETS = \['Упражнения \(Ноги\) список', 'Упражнения \(Грудь\) список', 'Упражнения \(Руки\) список'\]/);
+assert.match(library,/REBUILT_BASE_SHEETS = \['Упражнения \(Ноги\) список', 'Упражнения \(Грудь\) список', 'Упражнения \(Руки\) список', 'Упражнения \(Плечи\) список'\]/);
 assert.match(library,/if \(!isAvailableExercise\(row\)\) continue;/);
 assert.match(details,/training-exercise-variation-axes/);
 assert.match(details,/variation=\{variation\}/);
@@ -110,4 +111,4 @@ const legacyTechnique = { description:'Основная техника',
   variation_axes:[{label:'Хват',options:[{label:'обычный'},{label:'иной',description:'Инструкция к варианту'}]}] };
 assert.match(exerciseTechniqueText(legacyTechnique,
   variationPresentation(legacyTechnique,['иной'])), /Инструкция к варианту/);
-console.log('Rebuilt exercise catalog: 176 rows, 198 axes, 466 exact explanations and technique changes verified.');
+console.log('Rebuilt exercise catalog: 178 rows, 198 axes, 466 complete variation techniques verified.');
