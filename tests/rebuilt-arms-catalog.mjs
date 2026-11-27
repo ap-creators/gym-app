@@ -14,20 +14,22 @@ const {
 
 assert.equal(source.source_sheet, 'Упражнения (Руки) список');
 assert.equal(source.source_sheet_gid, 598353245);
-assert.equal(source.imported_count, 53);
-assert.equal(source.exercises.length, 53);
+assert.equal(source.imported_count, 52);
+assert.equal(source.exercises.length, 52);
 assert.equal(source.description_source_columns, 'K');
 assert.equal(source.variation_technique_source_columns, 'L:U; V:AE');
-assert.equal(new Set(source.exercises.map(item => item.name.toLocaleLowerCase('ru'))).size, 53);
-assert.equal(new Set(source.exercises.map(item => item.source_row)).size, 53);
-assert.equal(source.exercises.reduce((sum, item) => sum + item.variation_axes.length, 0), 72);
+assert.equal(new Set(source.exercises.map(item => item.name.toLocaleLowerCase('ru'))).size, 52);
+assert.equal(new Set(source.exercises.map(item => item.source_row)).size, 52);
+assert.equal(source.exercises.reduce((sum, item) => sum + item.variation_axes.length, 0), 70);
 assert.equal(source.exercises.reduce((sum, item) =>
-  sum + item.variation_axes.reduce((count, axis) => count + axis.options.length, 0), 0), 175);
+  sum + item.variation_axes.reduce((count, axis) => count + axis.options.length, 0), 0), 168);
 assert.match(library, /'Упражнения \(Руки\) список'/);
 assert.match(library, /'Предплечья'/);
 assert.match(techniqueLibrary, /'Упражнения \(Руки\) список'/);
 assert.match(browser, /equipmentOptions\.map/);
 assert.match(sql, /on conflict\(canonical_key\) do update/);
+assert.deepEqual(source.retired_canonical_keys, ['rebuild_arms_36']);
+assert.match(sql, /status='retired'/);
 assert.doesNotMatch(sql, /delete from public\.exercises|truncate/i);
 
 for (const exercise of source.exercises) {
@@ -67,4 +69,4 @@ const withArmblaster = source.exercises[0];
 assert(exerciseEquipmentTags(withArmblaster, ['с', 'прямой']).includes('Армбластер'));
 assert(exerciseEquipmentTags(withArmblaster, ['без', 'EZ']).includes('EZ-гриф'));
 
-console.log('Rebuilt arms catalog: 53 cards, 72 axes, 175 complete option techniques verified.');
+console.log('Rebuilt arms catalog: 52 active cards, 70 axes, 168 full option techniques verified.');
