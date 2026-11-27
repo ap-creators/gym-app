@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase.js';
 import { StandaloneWorkoutLauncher } from './StandaloneWorkoutLauncher.jsx';
 import { rescheduleScheduledWorkoutScoped } from '../lib/scheduledWorkoutControls.js';
 import { markScheduledWorkoutCompleted } from '../lib/workoutSessions.js';
+import { pickWorkoutOfDay } from '../lib/workoutLifecycle.js';
 import '../home-dynamic.css';
 import '../home-schedule-edit.css';
 import { carouselSwipeIndex } from '../lib/carouselSwipe.js';
@@ -314,9 +315,10 @@ async function loadWorkoutCard(dateKey) {
     if (response.data && (response.data.scheduled_date === dateKey || dateKey === todayKey)) { workoutRow = response.data; active = true; }
   }
   if (!workoutRow) {
-    const response = await supabase.from('scheduled_workouts').select('id, user_program_id, workout_name, scheduled_date, status, sequence_number, user_programs!inner(status)').eq('scheduled_date', dateKey).eq('user_programs.status', 'active').neq('status', 'cancelled').order('sequence_number', { ascending: true }).limit(1);
+    const response = await supabase.from('scheduled_workouts').select('id, user_program_id, workout_name, scheduled_date, status, sequence_number, user_programs!inner(status)').eq('scheduled_date', dateKey).eq('user_programs.status', 'active').neq('status', 'cancelled').order('sequence_number', { ascending: true });
     if (response.error) throw response.error;
-    workoutRow = response.data?.[0] ?? null;
+    // #140: every workout of the day is read, so a finished one does not hide the next.
+    workoutRow = pickWorkoutOfDay(response.data);
   }
   let recovery = false;
   if (!workoutRow && dateKey === toDateKey(new Date())) {

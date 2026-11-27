@@ -457,6 +457,14 @@ Five equal-sized buttons, from left to right: **Главная → Тренир�
 - The skipped workout stays in history: «Пропущена» in the program schedule, and on its own date in the home calendar the card «Пропущенная тренировка» with a disabled «Пропущена» button. It can still be returned to the schedule or marked done with the pencil on that date.
 - Check: `tests/workout-lifecycle-contracts.mjs` (`test:lifecycle`).
 
+## Several workouts on one day — November 2026 (#140)
+- A day can hold more than one workout: two programs that meet on a date, or the next workout of a program moved to the day of the previous one. The server now accepts such a move; before #140 it answered «Выберите дату позже предыдущей тренировки программы», so after one finished workout the next could not be done the same day.
+- The home card still shows one workout per day. It is the first one still to do (`scheduled`), in the order of the program, so a finished workout no longer hides the next one. When nothing is left to do, the card shows the first workout of the day, finished or skipped, as before. A running workout keeps the card as «Активная тренировка».
+- The other workouts of the day stay reachable from the program schedule; the home card does not list them.
+- Refusals when moving a workout: «Выберите дату не раньше предыдущей тренировки программы.» and «Для переноса только этой тренировки выберите дату не позже следующей. …».
+- «Разовая тренировка»: «Добавить упражнение» now takes any exercise the picker shows. Before #140 the server refused every exercise of the shared base, so a one-off workout stayed empty.
+- Logic: `pickWorkoutOfDay` in `src/lib/workoutLifecycle.js`, `src/lib/scheduledWorkoutControls.js`. Check: `tests/second-workout-same-day-db.mjs` (`test:lifecycle`).
+
 ## Program schedule tab: one list — November 2026 (#119)
 - The «График» tab of a running program is the «График тренировок» summary («N тренировок выполнено из M») and **one** list, `ProgramScheduleList`. Before #119 the same workouts came twice: a short «date — name» list and, below it, cards with the actions.
 - A row is 64px high: a 44px date tile (day over short month), the workout name, and one caption line «status · Цикл N / Этап N · N упражнений». The line never wraps: a part that does not fit is dropped whole, so a 375px phone may lose the exercise count on a long status.

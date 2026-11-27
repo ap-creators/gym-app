@@ -13,8 +13,10 @@ function mapWorkoutControlError(error, fallback) {
   const message = error?.message ?? '';
   if (message.includes('active workout')) return new Error('Сначала завершите или выйдите из текущей тренировки.');
   if (message.includes('cannot be in the past')) return new Error('Новая дата не может быть в прошлом.');
-  if (message.includes('after the previous workout')) return new Error('Выберите дату позже предыдущей тренировки программы.');
-  if (message.includes('before the next workout')) return new Error('Для переноса только этой тренировки выберите дату раньше следующей. Либо перенесите эту и все оставшиеся тренировки.');
+  // #140: two workouts of a program may share a day, so only a date out of order is refused.
+  // The older wording still comes from a database without that change.
+  if (message.includes('before the previous workout') || message.includes('after the previous workout')) return new Error('Выберите дату не раньше предыдущей тренировки программы.');
+  if (message.includes('after the next workout') || message.includes('before the next workout')) return new Error('Для переноса только этой тренировки выберите дату не позже следующей. Либо перенесите эту и все оставшиеся тренировки.');
   if (message.includes('Monday, Wednesday or Friday')) return new Error('Для ритма программы выберите понедельник, среду или пятницу.');
   if (message.includes('Tuesday, Thursday or Saturday')) return new Error('Для ритма программы выберите вторник, четверг или субботу.');
   if (message.includes('later workout history')) return new Error('Нельзя перестроить расписание после уже сохранённой более поздней тренировки.');
