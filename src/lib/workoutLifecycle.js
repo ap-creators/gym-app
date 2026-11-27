@@ -19,6 +19,15 @@ export function plannedWorkoutIsInFuture({ status, scheduledDate }, today) {
   return status === 'scheduled' && Boolean(scheduledDate) && scheduledDate > today;
 }
 
+// Issue #140: one day can hold several workouts, from two programs or two of the same program
+// moved onto one date. The home card shows one of them: the first still to do, so a finished
+// workout does not hide the next one. With nothing left to do, the first of the day.
+// `rows` are that day's workouts in the order of the program.
+export function pickWorkoutOfDay(rows) {
+  const list = rows ?? [];
+  return list.find((row) => row.status === 'scheduled') ?? list[0] ?? null;
+}
+
 // The session was finished elsewhere, for example by the 3-hour auto-completion.
 export function isStaleSessionError(error) {
   return error?.code === 'P0002' || /session not found/i.test(error?.message ?? '');
