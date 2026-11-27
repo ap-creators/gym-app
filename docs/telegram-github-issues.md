@@ -2,7 +2,7 @@
 
 > Telegram-бот поддерживает два проекта: в личном чате выбор кнопками, в супергруппе — отдельный топик для каждого проекта. [Выбор проекта](telegram-multi-project.md) · [Привязка топиков](telegram-topic-setup.md).
 
-Telegram-бот создаёт Issues в [`gym-app`](https://github.com/pavelmashina/gym-app/issues) или [`ryadom-app`](https://github.com/pavelmashina/ryadom-app/issues) после выбора проекта.
+Telegram-бот создаёт Issues в [`gym-app`](https://github.com/ap-creators/gym-app/issues) или [`ryadom-app`](https://github.com/ap-creators/ryadom-app/issues) после выбора проекта.
 
 ## Где расположен код
 
@@ -27,7 +27,7 @@ BotFather выдаст токен. **Никогда не добавлять ег
 
 Открыть [GitHub → Fine-grained tokens](https://github.com/settings/personal-access-tokens/new).
 
-- Resource owner: `pavelmashina`
+- Resource owner: `ap-creators`
 - Repository access: **Only select repositories → gym-app и ryadom-app**
 - Repository permissions: **Issues → Read and write**
 - Остальные разрешения оставить по минимуму.
@@ -96,7 +96,7 @@ Invoke-RestMethod -Uri "https://api.telegram.org/bot$token/setWebhook" -Method P
 4. Для новой задачи выбрать проект, затем отправить скриншот **без подписи** и текст — одна Issue со скриншотом в выбранном репозитории.
 5. Для Gym App сохраняется прежнее поведение: в личном чате фотография с подписью без начатого черновика сразу создаёт Issue в Gym App.
 6. Для нескольких сообщений в любом порядке: `/new`, **выбрать проект**, затем фото/текст, затем `/create`.
-7. Проверить результаты в [Issues gym-app](https://github.com/pavelmashina/gym-app/issues) и [Issues ryadom-app](https://github.com/pavelmashina/ryadom-app/issues).
+7. Проверить результаты в [Issues gym-app](https://github.com/ap-creators/gym-app/issues) и [Issues ryadom-app](https://github.com/ap-creators/ryadom-app/issues).
 
 ## Безопасность и особенности
 

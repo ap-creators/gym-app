@@ -2,8 +2,8 @@
 
 Бот [@GymAppEditBot](https://t.me/GymAppEditBot) создаёт GitHub Issues в одном из двух репозиториев:
 
-- **🏋️ Gym App** → [pavelmashina/gym-app](https://github.com/pavelmashina/gym-app/issues)
-- **🐾 Рядом** → [pavelmashina/ryadom-app](https://github.com/pavelmashina/ryadom-app/issues)
+- **🏋️ Gym App** → [ap-creators/gym-app](https://github.com/ap-creators/gym-app/issues)
+- **🐾 Рядом** → [ap-creators/ryadom-app](https://github.com/ap-creators/ryadom-app/issues)
 
 ## Личная беседа с ботом
 

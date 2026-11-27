@@ -21,7 +21,7 @@ Deno.serve(async(request:Request)=>{
 
   const {data:credentials,error:credError}=await admin.rpc("gym_push_vapid_credentials");
   if(credError||!credentials?.public||!credentials?.private)return json({error:"VAPID configuration unavailable"},503);
-  webpush.setVapidDetails("https://github.com/pavelmashina/gym-app",credentials.public,credentials.private);
+  webpush.setVapidDetails("https://github.com/ap-creators/gym-app",credentials.public,credentials.private);
 
   const {data:subscribers,error:subscriberError}=await admin.from("push_subscriptions")
     .select("id,user_id,endpoint,p256dh,auth").eq("is_active",true);
