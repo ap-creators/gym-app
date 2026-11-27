@@ -1,0 +1,43 @@
+/* «Подключение программы» on the dark theme.
+   The screen is built from tokens, but four things stayed light:
+   - the bottom bar is a literal light grey (rgba(243,243,240,.96) in create-program.css) and its
+     button writes #fff on --ink, which the dark theme turns near-white: a white strip with no label;
+   - a disabled button is a literal light grey plate (#d7d7d2);
+   - «Первая тренировка» sits on --accent-soft, a token the dark theme does not redefine, with
+     light --ink text on it;
+   - the two error messages use literal dark reds meant for a white card.
+   Here the bar takes --surface, the button writes --surface on --ink, and the quiet plates are a
+   dimmed --ink over --surface, like the program detail bar and the active tiles of #96.
+   The red is the dark red of the program schedule list (--schedule-danger).
+   Only the dark theme is overridden; the light theme is unchanged.
+   Imported in main.jsx after the global layers. */
+html[data-theme='dark'] .ready-program-join-phone {
+  --join-danger: #e9958a;
+}
+
+html[data-theme='dark'] .ready-program-join-phone .ready-program-join-footer {
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+}
+
+html[data-theme='dark'] .ready-program-join-phone .create-program-next {
+  color: var(--surface);
+}
+
+html[data-theme='dark'] .ready-program-join-phone .create-program-next:disabled {
+  background: color-mix(in srgb, var(--ink) 14%, var(--surface));
+  color: var(--muted);
+}
+
+html[data-theme='dark'] .ready-program-join-phone .ready-program-date-preview {
+  background: color-mix(in srgb, var(--ink) 14%, var(--surface));
+}
+
+html[data-theme='dark'] .ready-program-join-phone .ready-program-date-error {
+  color: var(--join-danger);
+}
+
+html[data-theme='dark'] .ready-program-join-phone .program-schedule-error {
+  border-color: color-mix(in srgb, var(--join-danger) 40%, var(--surface));
+  background: color-mix(in srgb, var(--join-danger) 14%, var(--surface));
+  color: var(--join-danger);
+}
