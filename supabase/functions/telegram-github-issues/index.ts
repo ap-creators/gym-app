@@ -27,8 +27,8 @@ type IssueDraft = {
 
 type ProjectKey = "gym-app" | "ryadom-app";
 const REPOSITORIES: Record<ProjectKey, { fullName: string; title: string }> = {
-  "gym-app": { fullName: "pavelmashina/gym-app", title: "Gym App" },
-  "ryadom-app": { fullName: "pavelmashina/ryadom-app", title: "Рядом" },
+  "gym-app": { fullName: "ap-creators/gym-app", title: "Gym App" },
+  "ryadom-app": { fullName: "ap-creators/ryadom-app", title: "Рядом" },
 };
 const issueApi = (project: ProjectKey) =>
   "https://api.github.com/repos/" + REPOSITORIES[project].fullName + "/issues";
@@ -529,7 +529,7 @@ type BoundTopic = { chat_id: string; thread_id: number; project: ProjectKey };
 const RULES = [
   "📋 GymAppEditBot — задачи Gym App и «Рядом»",
   "",
-  "Проекты: pavelmashina/gym-app и pavelmashina/ryadom-app.",
+  "Проекты: ap-creators/gym-app и ap-creators/ryadom-app.",
   "",
   "🆕 Новая задача — сначала выбрать проект.",
   "🏋️ Gym App / 🐾 Рядом — выбор проекта для текущего черновика.",

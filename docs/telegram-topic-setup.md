@@ -4,8 +4,8 @@
 
 | Топик | GitHub Issues | Команда привязки |
 | --- | --- | --- |
-| 🏋️ Gym App | [pavelmashina/gym-app](https://github.com/pavelmashina/gym-app/issues) | `/bind gym` |
-| 🐾 Рядом — питомцы | [pavelmashina/ryadom-app](https://github.com/pavelmashina/ryadom-app/issues) | `/bind ryadom` |
+| 🏋️ Gym App | [ap-creators/gym-app](https://github.com/ap-creators/gym-app/issues) | `/bind gym` |
+| 🐾 Рядом — питомцы | [ap-creators/ryadom-app](https://github.com/ap-creators/ryadom-app/issues) | `/bind ryadom` |
 
 **Существующая привязка Gym App сохранена автоматически.** Новая настройка нужна только для топика «Рядом», если топик Gym App уже был подключён.
 
@@ -48,6 +48,6 @@
 
 1. Отправь `/project` в старом топике: бот должен написать, что он привязан к **Gym App**.
 2. В новом топике отправь `/bind ryadom` и `/project`: ответ должен указывать **«Рядом»**.
-3. В новом топике создай текстовую задачу и убедись, что она появилась **только** в [Issues ryadom-app](https://github.com/pavelmashina/ryadom-app/issues).
+3. В новом топике создай текстовую задачу и убедись, что она появилась **только** в [Issues ryadom-app](https://github.com/ap-creators/ryadom-app/issues).
 4. Убедись, что ссылки и подтверждения приходят именно в исходный топик, а в другом топике бот не реагирует.
 5. Проверь метки **«Новая задача» → «Выполнена» → «Проверена»**: они настроены в обоих репозиториях.
